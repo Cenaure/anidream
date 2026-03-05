@@ -5,17 +5,24 @@ import {AuthSchema} from '../_schemas/auth.schema';
 import {MessageService} from '../../../shared/services/message.service';
 import {ErrorService} from '../../../shared/utils/processError';
 import {isPlatformBrowser} from '@angular/common';
+import {environment} from '../../../../env/dev.env';
+import {UserSchema} from '../../../features/dashboard/users/_schemas/user.schema';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  //region: ---constructor
+  private readonly apiUrl = environment.apiUrl;
+
   private readonly http = inject(HttpClient);
   private readonly messageService = inject(MessageService);
   private readonly errorService = inject(ErrorService);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly isBrowser = isPlatformBrowser(this.platformId);
+  //endregion: ---constructor
 
+  //region: ---Session Management
   private readonly _loggedUser = signal<string | null>(
     this.isBrowser ? localStorage.getItem("loggedUser") : null
   );
@@ -29,24 +36,28 @@ export class AuthService {
     this._loggedUser.set(name);
   }
 
-  // публичные для чтения
+  // Public
   readonly loggedUser = this._loggedUser.asReadonly();
   readonly isLoggedIn = computed(() => this._loggedUser() !== null);
 
   set token(token: string) {
-    if (this.isBrowser) localStorage.setItem('token', token);
+    if (this.isBrowser) { // @ts-ignore
+      localStorage.setItem('token', token);
+    }
   }
 
   get token() {
+    // @ts-ignore
     return this.isBrowser ? localStorage.getItem('token') ?? '' : '';
   }
+  //endregion: ---Session Management
 
   login(auth
         :
         AuthSchema
   ):
     Observable<boolean> {
-    return this.http.post('http://localhost:8080/login', auth, {responseType: "text"})
+    return this.http.post(`${this.apiUrl}/login`, auth, {responseType: "text"})
       .pipe(
         tap(token => {
           this.token = token;
@@ -66,11 +77,24 @@ export class AuthService {
       )
   }
 
+  sign_up(user: UserSchema): Observable<UserSchema> {
+    return this.http.post<UserSchema>(`${this.apiUrl}/register`, user).pipe(
+      tap(() => {
+        this.messageService.success(`Welcome, ${user.name} you have been signed up successfully`);
+      }),
+      catchError(error => {
+        return this.errorService.processError(error);
+      })
+    )
+  }
+
   logout(): Observable<boolean> {
-    return this.http.get<void>(`http://localhost:8080/logout/${this.token}`).pipe(
+    return this.http.get<void>(`${this.apiUrl}/logout/${this.token}`).pipe(
       map(() => {
         this.setLoggedUser(null);
-        if (this.isBrowser) localStorage.removeItem('token');
+        if (this.isBrowser) { // @ts-ignore
+          localStorage.removeItem('token');
+        }
         this.messageService.success('Logged out');
         return true;
       }),

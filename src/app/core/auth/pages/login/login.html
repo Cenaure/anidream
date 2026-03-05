@@ -6,7 +6,7 @@
     </div>
 
     <div hlmCardContent>
-      <form id="login-form" (ngSubmit)="login()">
+      <form id="login-form" (ngSubmit)="login()"  #formModel="ngForm">
         <div class="flex flex-col gap-6">
           <div class="grid gap-2">
             <label hlmLabel for="name">Username</label>
@@ -40,9 +40,8 @@
     </div>
 
     <div hlmCardFooter class="flex-col gap-2">
-      <button type="submit" form="login-form" hlmBtn class="w-full cursor-pointer">Login</button>
-      <button hlmBtn variant="outline" class="w-full cursor-pointer">Login with Google</button>
-      <button hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign Up</button>
+      <button type="submit" form="login-form" hlmBtn class="w-full cursor-pointer" [disabled]="formModel.invalid">Login</button>
+      <button routerLink="/auth/sign-up" hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign Up</button>
     </div>
   </section>
 </div>

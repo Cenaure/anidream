@@ -8,12 +8,11 @@ import {lucideCheck, lucideChevronDown} from '@ng-icons/lucide';
 import {AuthService} from '../../services/auth.service';
 import {AuthSchema} from '../../_schemas/auth.schema';
 import {FormsModule} from '@angular/forms';
-import {Router} from '@angular/router';
-import {HlmToasterImports} from '@spartan-ng/helm/sonner';
+import {Router, RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [HlmButtonImports, HlmInputImports, HlmLabelImports, HlmCardImports, FormsModule, HlmToasterImports],
+  imports: [HlmButtonImports, HlmInputImports, HlmLabelImports, HlmCardImports, FormsModule, RouterLink],
   providers: [provideIcons({lucideCheck, lucideChevronDown})],
   host: {
     class: 'contents',
@@ -21,11 +20,14 @@ import {HlmToasterImports} from '@spartan-ng/helm/sonner';
   templateUrl: './login.html',
 })
 export class LoginPage {
+  //region: ---constructor
   constructor(
     private readonly authService: AuthService,
     private router: Router,
   ) {}
+  //endregion: ---constructor
 
+  //region: ---login
   auth = new AuthSchema("John","john");
 
   errorMessage = signal('')
@@ -41,4 +43,5 @@ export class LoginPage {
       },
     })
   }
+  //endregion: ---login
 }
