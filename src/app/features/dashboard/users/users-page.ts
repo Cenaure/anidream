@@ -1,0 +1,170 @@
+import {Component, signal, inject, OnInit} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {lucideChevronDown} from '@ng-icons/lucide';
+import {BrnSelectImports} from '@spartan-ng/brain/select';
+import {HlmButtonImports} from '@spartan-ng/helm/button';
+import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
+import {HlmIconImports} from '@spartan-ng/helm/icon';
+import {HlmInputImports} from '@spartan-ng/helm/input';
+import {HlmTableImports} from '@spartan-ng/helm/table';
+import {hlmMuted} from '@spartan-ng/helm/typography';
+import {
+  type ColumnDef,
+  type ColumnFiltersState,
+  createAngularTable,
+  FlexRenderDirective,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  type RowSelectionState,
+  type SortingState,
+  type VisibilityState,
+} from '@tanstack/angular-table';
+import {Group, UserSchema} from './_schemas/user.schema';
+import {UsersService} from './services/users.service';
+import {AuthService} from '../../../core/auth/services/auth.service';
+import {GroupToStringPipe} from './pipes/group-to-string-pipe';
+import {PermissionsPipe} from './pipes/permissions-pipe';
+
+@Component({
+  selector: 'app-users',
+  imports: [
+    FlexRenderDirective,
+    FormsModule,
+    HlmDropdownMenuImports,
+    HlmButtonImports,
+    NgIcon,
+    HlmIconImports,
+    HlmInputImports,
+    BrnSelectImports,
+    HlmTableImports,
+  ],
+  providers: [provideIcons({lucideChevronDown}), GroupToStringPipe, PermissionsPipe],
+  host: {class: 'w-full'},
+  templateUrl: './users-page.html',
+  standalone: true
+})
+export class UsersPage implements OnInit {
+  private readonly groupsToStringPipe = inject(GroupToStringPipe)
+  private readonly usersService = inject(UsersService);
+  private readonly authService = inject(AuthService);
+  private readonly permissionsPipe = inject(PermissionsPipe);
+
+  protected readonly _users = signal<UserSchema[]>([]);
+
+  protected readonly _columns: ColumnDef<UserSchema>[] = [
+    {
+      accessorKey: 'id',
+      id: 'id',
+      header: 'ID',
+      enableSorting: true,
+      cell: (info) => `<span>${info.getValue<number>() ?? '—'}</span>`,
+    },
+    {
+      accessorKey: 'name',
+      id: 'name',
+      header: 'Name',
+      enableSorting: true,
+      cell: (info) => `<span>${info.getValue<string>()}</span>`,
+    },
+    {
+      accessorKey: 'email',
+      id: 'email',
+      header: 'Email',
+      enableSorting: true,
+      cell: (info) => `<div class="lowercase">${info.getValue<string>()}</div>`,
+    },
+    {
+      accessorKey: 'lastLogin',
+      id: 'lastLogin',
+      header: 'Last Login',
+      enableSorting: true,
+      cell: (info) => {
+        const date = info.getValue<Date | undefined>();
+        return `<span>${date ? new Date(date).toLocaleDateString() : '—'}</span>`;
+      },
+    },
+    {
+      accessorKey: 'groups',
+      id: 'groups',
+      header: 'User Groups',
+      enableSorting: true,
+      cell: (info) => {
+        const groups = info.getValue<Group[]>()
+        return `<span>${this.groupsToStringPipe.transform(groups) ?? '—'}</span>`
+      },
+    },
+    {
+      accessorKey: 'groups', // ← тоже groups, не permissions
+      id: 'permissions',
+      header: 'User Permissions',
+      cell: (info) => {
+        const groups = info.getValue<Group[]>();
+        return `<span>${this.permissionsPipe.transform(groups, 'permissions')}</span>`;
+      },
+    },
+  ];
+
+  private readonly _columnFilters = signal<ColumnFiltersState>([]);
+  private readonly _sorting = signal<SortingState>([]);
+  private readonly _rowSelection = signal<RowSelectionState>({});
+  private readonly _columnVisibility = signal<VisibilityState>({
+    lastLogin: this.authService.isLoggedIn()
+  });
+
+  protected readonly _table = createAngularTable<UserSchema>(() => ({
+    data: this._users(),
+    columns: this._columns,
+    onSortingChange: (updater) => {
+      updater instanceof Function ? this._sorting.update(updater) : this._sorting.set(updater);
+    },
+    onColumnFiltersChange: (updater) => {
+      updater instanceof Function ? this._columnFilters.update(updater) : this._columnFilters.set(updater);
+    },
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: (updater) => {
+      updater instanceof Function ? this._columnVisibility.update(updater) : this._columnVisibility.set(updater);
+    },
+    onRowSelectionChange: (updater) => {
+      updater instanceof Function ? this._rowSelection.update(updater) : this._rowSelection.set(updater);
+    },
+    state: {
+      sorting: this._sorting(),
+      columnFilters: this._columnFilters(),
+      columnVisibility: this._columnVisibility(),
+      rowSelection: this._rowSelection(),
+    },
+  }));
+
+  protected readonly _hidableColumns = this._table.getAllColumns().filter((c) => c.getCanHide());
+  protected readonly _hlmMuted = hlmMuted;
+
+  ngOnInit(): void {
+    const token = this.authService.token;
+
+    if (this.authService.isLoggedIn()) this.usersService.getExtendedUsers(token).subscribe({
+      next: (users) => {
+        this._users.set(users)
+        console.log(users)
+      },
+      error: (err) => console.error('error:', err)
+    });
+    else {
+      this.usersService.getUsers().subscribe({
+        next: (users) => this._users.set(users),
+        error: (err) => console.error('error:', err)
+      });
+    }
+
+  }
+
+  protected _filterChanged(event: Event): void {
+    const value = (event.target as { value?: string } | null)?.value ?? '';
+    this._table.getColumn('email')?.setFilterValue(value);
+  }
+}

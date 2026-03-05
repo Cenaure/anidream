@@ -1,0 +1,49 @@
+<div class="flex justify-center items-center md:py-40">
+  <section class="w-full max-w-sm ring-1 ring-slate-500" hlmCard>
+    <div hlmCardHeader>
+      <h3 hlmCardTitle>Login to your account</h3>
+      <p hlmCardDescription>Enter your email below to login to your account please</p>
+    </div>
+
+    <div hlmCardContent>
+      <form id="login-form" (ngSubmit)="login()">
+        <div class="flex flex-col gap-6">
+          <div class="grid gap-2">
+            <label hlmLabel for="name">Username</label>
+            <input type="text" name="name" required hlmInput [(ngModel)]="auth.name" minlength="4" #nameField="ngModel"/>
+            @if (nameField.invalid && nameField.touched) {
+              <p class="text-sm text-red-500">
+                @if (nameField.errors?.['required']) {
+                  Field is required
+                }
+                @if (nameField.errors?.['minlength']) {
+                  Minimum 5 letters
+                }
+              </p>
+            }
+          </div>
+
+          <div class="grid gap-2">
+            <div class="flex items-center">
+              <label hlmLabel for="password">Password</label>
+            </div>
+            <input type="password" name="password" hlmInput [(ngModel)]="auth.password"/>
+          </div>
+        </div>
+      </form>
+
+      @if (errorMessage()) {
+        <p class="text-red-500 mt-4">
+          {{errorMessage()}}
+        </p>
+      }
+    </div>
+
+    <div hlmCardFooter class="flex-col gap-2">
+      <button type="submit" form="login-form" hlmBtn class="w-full cursor-pointer">Login</button>
+      <button hlmBtn variant="outline" class="w-full cursor-pointer">Login with Google</button>
+      <button hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign Up</button>
+    </div>
+  </section>
+</div>
+
