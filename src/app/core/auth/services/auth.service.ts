@@ -88,6 +88,14 @@ export class AuthService {
     )
   }
 
+  userConflicts(user: UserSchema): Observable<string[]> {
+    return this.http.post<string[]>(`${this.apiUrl}/user-conflicts`, user).pipe(
+      catchError(error => {
+        return this.errorService.processError(error);
+      })
+    )
+  }
+
   logout(): Observable<boolean> {
     return this.http.get<void>(`${this.apiUrl}/logout/${this.token}`).pipe(
       map(() => {

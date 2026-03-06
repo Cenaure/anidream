@@ -8,6 +8,10 @@ export const DASHBOARD_ROUTES: Routes = [
       {
         path: "",
         loadComponent: () => import('./users/users-page').then(c => c.UsersPage),
+      },
+      {
+        path: "user-new",
+        loadComponent: () => import('./users/user-edit/user-edit').then(c => c.UserEdit),
       }
     ],
   }

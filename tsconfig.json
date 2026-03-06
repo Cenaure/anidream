@@ -12,7 +12,10 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "lib": ["ES2022", "dom"],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
     "paths": {
       "@spartan-ng/helm/card": [
         "./src/app/shared/ui/card/src/index.ts"
@@ -47,6 +50,15 @@
       "@spartan-ng/helm/typography": [
         "./src/app/shared/ui/typography/src/index.ts"
       ],
+      "@spartan-ng/helm/alert-dialog": [
+        "./src/app/shared/ui/alert-dialog/src/index.ts"
+      ],
+      "@spartan-ng/helm/switch": [
+        "./src/app/shared/ui/switch/src/index.ts"
+      ],
+      "@spartan-ng/helm/checkbox": [
+        "./src/app/shared/ui/checkbox/src/index.ts"
+      ]
     }
   },
   "angularCompilerOptions": {

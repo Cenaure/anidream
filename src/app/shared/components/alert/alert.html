@@ -1,0 +1,16 @@
+<hlm-alert-dialog>
+  <button hlmAlertDialogTrigger asChild>
+    <ng-content />
+  </button>
+
+  <hlm-alert-dialog-content *hlmAlertDialogPortal="let ctx" class="bg-zinc-900">
+    <hlm-alert-dialog-header>
+      <h2 hlmAlertDialogTitle>{{ title() }}</h2>
+      <p hlmAlertDialogDescription>{{ description() }}</p>
+    </hlm-alert-dialog-header>
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel class="cursor-pointer" (click)="ctx.close()">{{ cancelLabel() }}</button>
+      <button hlmAlertDialogAction class="bg-red-500 hover:bg-red-600 cursor-pointer text-white" (click)="confirmed.emit(); ctx.close()">{{ confirmLabel() }}</button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>

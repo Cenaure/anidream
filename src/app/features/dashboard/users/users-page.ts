@@ -27,6 +27,9 @@ import {UsersService} from './services/users.service';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {GroupToStringPipe} from './pipes/group-to-string-pipe';
 import {PermissionsPipe} from './pipes/permissions-pipe';
+import {DomSanitizer} from '@angular/platform-browser';
+import {Alert} from '../../../shared/components/alert/alert';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-users',
@@ -40,6 +43,8 @@ import {PermissionsPipe} from './pipes/permissions-pipe';
     HlmInputImports,
     BrnSelectImports,
     HlmTableImports,
+    Alert,
+    RouterLink,
   ],
   providers: [provideIcons({lucideChevronDown}), GroupToStringPipe, PermissionsPipe],
   host: {class: 'w-full'},
@@ -105,6 +110,11 @@ export class UsersPage implements OnInit {
         return `<span>${this.permissionsPipe.transform(groups, 'permissions')}</span>`;
       },
     },
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: () => null,
+    },
   ];
 
   private readonly _columnFilters = signal<ColumnFiltersState>([]);
@@ -147,13 +157,7 @@ export class UsersPage implements OnInit {
   ngOnInit(): void {
     const token = this.authService.token;
 
-    if (this.authService.isLoggedIn()) this.usersService.getExtendedUsers(token).subscribe({
-      next: (users) => {
-        this._users.set(users)
-        console.log(users)
-      },
-      error: (err) => console.error('error:', err)
-    });
+    if (this.authService.isLoggedIn()) this.loadUsers(token);
     else {
       this.usersService.getUsers().subscribe({
         next: (users) => this._users.set(users),
@@ -166,5 +170,23 @@ export class UsersPage implements OnInit {
   protected _filterChanged(event: Event): void {
     const value = (event.target as { value?: string } | null)?.value ?? '';
     this._table.getColumn('email')?.setFilterValue(value);
+  }
+
+  private loadUsers(token: string) {
+    this.usersService.getExtendedUsers(token).subscribe({
+      next: (users) => {
+        this._users.set(users)
+        console.log(users)
+      },
+      error: (err) => console.error('error:', err)
+    })
+  }
+
+  protected deleteUser(user: UserSchema): void {
+    console.log('delete', user);
+    const token = this.authService.token;
+    this.usersService.deleteUser(user.id || -1, token).subscribe(success => {
+        if(success) this.loadUsers(token)
+    })
   }
 }

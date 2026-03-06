@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HlmButton} from '@spartan-ng/helm/button';
 import {
@@ -11,19 +11,21 @@ import {
 } from '@spartan-ng/helm/card';
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
-import {provideIcons} from '@ng-icons/core';
-import {lucideCheck, lucideChevronDown} from '@ng-icons/lucide';
 import {Router, RouterLink} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
-import {email, form, FormField, minLength, pattern, required, validate, validateAsync} from '@angular/forms/signals';
-import {UserSchema} from '../../../../features/dashboard/users/_schemas/user.schema';
-import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
-import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
-import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
+import {AuthService} from '../../../../core/auth/services/auth.service';
+import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
+import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
+import {zxcvbn, zxcvbnOptions} from '@zxcvbn-ts/core';
+import {email, form, FormField, minLength, required, validate, validateAsync} from '@angular/forms/signals';
+import {Group, UserSchema} from '../_schemas/user.schema';
 import {rxResource} from '@angular/core/rxjs-interop';
+import {BrnSwitch} from '@spartan-ng/brain/switch';
+import {HlmSwitch} from '@spartan-ng/helm/switch';
+import {UsersService} from '../services/users.service';
+import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
 
 @Component({
-  selector: 'app-sign-up',
+  selector: 'app-user-edit',
   imports: [
     FormsModule,
     HlmButton,
@@ -35,16 +37,18 @@ import {rxResource} from '@angular/core/rxjs-interop';
     HlmCardTitle,
     HlmInput,
     HlmLabel,
-    RouterLink,
-    FormField
+    FormField,
+    BrnSwitch,
+    HlmSwitch,
+    HlmCheckbox
   ],
-  providers: [provideIcons({lucideCheck, lucideChevronDown})],
-  templateUrl: './sign-up.html',
+  templateUrl: './user-edit.html',
 })
-export class SignUp {
+export class UserEdit implements OnInit{
   //region: ---constructor
   constructor(
     private readonly authService: AuthService,
+    private readonly usersService: UsersService,
     private readonly router: Router,
   ) {
     const options = {
@@ -59,6 +63,14 @@ export class SignUp {
   }
   //endregion: ---constructor
 
+  groupsFromServer = signal<Group[]>([])
+
+  ngOnInit() {
+    this.usersService.getGroups().subscribe(groups => {
+      this.groupsFromServer.set(groups);
+    })
+  }
+
   //region: ---formDeclaration
   // aka react hook forms
   // but without zod validation :(
@@ -66,7 +78,7 @@ export class SignUp {
     login: '', // Name
     email: '',
     password: '',
-    confirmPassword: '',
+    isActive: false
   })
 
   // Oh, they actually have zod validation 0_0
@@ -109,37 +121,7 @@ export class SignUp {
       },
       onError: error => null
     })
-    //pattern(schemaPath.email, /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/, {message: "Invalid email"})
     required(schemaPath.password, {message: "Password is required"})
-    validate(schemaPath.password, ({ value }) => {
-      const password = value();
-
-      if (!password) return null;
-
-      const result = zxcvbn(password);
-
-      const feedback = result.feedback.suggestions.join(' ');
-      const crackTime = result.crackTimesDisplay.offlineSlowHashing1e4PerSecond;
-
-      if (result.score === 0) {
-        return { kind: 'weakPassword', message: `Too weak. ${feedback}` };
-      }
-      if (result.score === 1) {
-        return { kind: 'weakPassword', message: `Very weak — crack time: ${crackTime}. ${feedback}` };
-      }
-      if (result.score === 2) {
-        return { kind: 'weakPassword', message: `Weak — crack time: ${crackTime}. ${feedback}` };
-      }
-
-      return null;
-    })
-    required(schemaPath.confirmPassword, {message: "Confirm your password"})
-    validate(schemaPath.confirmPassword, ({ value, valueOf }) => {
-      if (value() !== valueOf(schemaPath.password)) {
-        return { kind: 'passwordMismatch', message: 'Passwords do not match' };
-      }
-      return null;
-    });
   })
   //endregion: ---formDeclaration
 
