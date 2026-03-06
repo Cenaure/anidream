@@ -38,7 +38,6 @@ import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
     HlmInput,
     HlmLabel,
     FormField,
-    BrnSwitch,
     HlmSwitch,
     HlmCheckbox
   ],
@@ -63,6 +62,7 @@ export class UserEdit implements OnInit{
   }
   //endregion: ---constructor
 
+  //region: ---ngOnInit: groups loading
   groupsFromServer = signal<Group[]>([])
 
   ngOnInit() {
@@ -70,6 +70,7 @@ export class UserEdit implements OnInit{
       this.groupsFromServer.set(groups);
     })
   }
+  //endregion: ---ngOnInit groups loading
 
   //region: ---formDeclaration
   // aka react hook forms
@@ -78,7 +79,7 @@ export class UserEdit implements OnInit{
     login: '', // Name
     email: '',
     password: '',
-    isActive: false
+    isActive: false,
   })
 
   // Oh, they actually have zod validation 0_0
@@ -125,14 +126,29 @@ export class UserEdit implements OnInit{
   })
   //endregion: ---formDeclaration
 
+  //region: ---groups
+  selectedGroups = signal<Group[]>([]);
+
+  toggleGroup(group: Group, checked: boolean) {
+    console.log(group)
+    this.selectedGroups.update(groups =>
+      checked ? [...groups, group] : groups.filter(g => g.id !== group.id)
+    );
+  }
+
   // Server Error
   errorMessage = signal('')
+  //endregion: ---groups
+
 
   signUp(event: any) {
+    console.log(this.selectedGroups())
+
+    return;
     //region: ---UserFormat
     event.preventDefault();
     const data = this.model()
-    const user = new UserSchema(data.login, data.email, undefined, undefined, data.password)
+    const user = new UserSchema(data.login, data.email, undefined, undefined, data.password, data.isActive, this.selectedGroups())
     //endregion: ---UserFormat
 
     // AuthService Sign-Up

@@ -50,11 +50,14 @@
           <div class="flex justify-between">
             @for (group of groupsFromServer(); track group.id) {
               <div class="flex gap-2">
-                <hlm-checkbox id="terms" />
-                <label hlmLabel for="terms">{{group.name}}</label>
+                <hlm-checkbox
+                  class="cursor-pointer"
+                  [id]="'group-' + group.id"
+                  [checked]="selectedGroups().includes(group)"
+                  (checkedChange)="toggleGroup(group, $event)" />
+                <label hlmLabel [for]="'group-' + group.id">{{ group.name }}</label>
               </div>
             }
-
           </div>
         </div>
       </form>
