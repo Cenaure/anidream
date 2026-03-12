@@ -29,7 +29,9 @@ import {GroupToStringPipe} from './pipes/group-to-string-pipe';
 import {PermissionsPipe} from './pipes/permissions-pipe';
 import {DomSanitizer} from '@angular/platform-browser';
 import {Alert} from '../../../shared/components/alert/alert';
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
+import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
+import {dashboardCreateUserRoute, dashboardEditUserRoute} from '../../../shared/utils/paths';
 
 @Component({
   selector: 'app-users',
@@ -45,6 +47,7 @@ import {RouterLink} from '@angular/router';
     HlmTableImports,
     Alert,
     RouterLink,
+    LucideAngularModule,
   ],
   providers: [provideIcons({lucideChevronDown}), GroupToStringPipe, PermissionsPipe],
   host: {class: 'w-full'},
@@ -52,10 +55,13 @@ import {RouterLink} from '@angular/router';
   standalone: true
 })
 export class UsersPage implements OnInit {
+  readonly squarePenIcon = SquarePenIcon
   private readonly groupsToStringPipe = inject(GroupToStringPipe)
   private readonly usersService = inject(UsersService);
   private readonly authService = inject(AuthService);
   private readonly permissionsPipe = inject(PermissionsPipe);
+  private readonly router = inject(Router)
+  protected readonly dashboardEditUserRoute = dashboardEditUserRoute;
 
   protected readonly _users = signal<UserSchema[]>([]);
 
@@ -64,7 +70,7 @@ export class UsersPage implements OnInit {
       accessorKey: 'id',
       id: 'id',
       header: 'ID',
-      enableSorting: true,
+      enableSorting: false,
       cell: (info) => `<span>${info.getValue<number>() ?? '—'}</span>`,
     },
     {
@@ -95,7 +101,7 @@ export class UsersPage implements OnInit {
       accessorKey: 'groups',
       id: 'groups',
       header: 'User Groups',
-      enableSorting: true,
+      enableSorting: false,
       cell: (info) => {
         const groups = info.getValue<Group[]>()
         return `<span>${this.groupsToStringPipe.transform(groups) ?? '—'}</span>`
@@ -105,6 +111,7 @@ export class UsersPage implements OnInit {
       accessorKey: 'groups', // ← тоже groups, не permissions
       id: 'permissions',
       header: 'User Permissions',
+      enableSorting: false,
       cell: (info) => {
         const groups = info.getValue<Group[]>();
         return `<span>${this.permissionsPipe.transform(groups, 'permissions')}</span>`;
@@ -127,6 +134,7 @@ export class UsersPage implements OnInit {
   protected readonly _table = createAngularTable<UserSchema>(() => ({
     data: this._users(),
     columns: this._columns,
+    enableSorting: true,
     onSortingChange: (updater) => {
       updater instanceof Function ? this._sorting.update(updater) : this._sorting.set(updater);
     },
@@ -149,6 +157,9 @@ export class UsersPage implements OnInit {
       columnVisibility: this._columnVisibility(),
       rowSelection: this._rowSelection(),
     },
+    initialState: {
+      pagination: { pageSize: 10 }
+    }
   }));
 
   protected readonly _hidableColumns = this._table.getAllColumns().filter((c) => c.getCanHide());
@@ -176,7 +187,6 @@ export class UsersPage implements OnInit {
     this.usersService.getExtendedUsers(token).subscribe({
       next: (users) => {
         this._users.set(users)
-        console.log(users)
       },
       error: (err) => console.error('error:', err)
     })
@@ -189,4 +199,10 @@ export class UsersPage implements OnInit {
         if(success) this.loadUsers(token)
     })
   }
+
+  hrefToEditPage(id: number) {
+    this.router.navigateByUrl(dashboardEditUserRoute(id));
+  }
+
+  protected readonly dashboardCreateUserRoute = dashboardCreateUserRoute;
 }

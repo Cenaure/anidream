@@ -11,18 +11,18 @@ import {
 } from '@spartan-ng/helm/card';
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
-import {Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../../../core/auth/services/auth.service';
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
-import {zxcvbn, zxcvbnOptions} from '@zxcvbn-ts/core';
-import {email, form, FormField, minLength, required, validate, validateAsync} from '@angular/forms/signals';
+import {zxcvbnOptions} from '@zxcvbn-ts/core';
+import {email, form, FormField, minLength, required} from '@angular/forms/signals';
 import {Group, UserSchema} from '../_schemas/user.schema';
-import {rxResource} from '@angular/core/rxjs-interop';
-import {BrnSwitch} from '@spartan-ng/brain/switch';
 import {HlmSwitch} from '@spartan-ng/helm/switch';
 import {UsersService} from '../services/users.service';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
+import {dashboardUsersRoute} from '../../../../shared/utils/paths';
+import {map, of, switchMap, tap} from 'rxjs';
 
 @Component({
   selector: 'app-user-edit',
@@ -49,6 +49,7 @@ export class UserEdit implements OnInit{
     private readonly authService: AuthService,
     private readonly usersService: UsersService,
     private readonly router: Router,
+    private readonly route: ActivatedRoute,
   ) {
     const options = {
       translations: zxcvbnEnPackage.translations,
@@ -60,15 +61,48 @@ export class UserEdit implements OnInit{
     }
     zxcvbnOptions.setOptions(options)
   }
+
+  // TODO Must be mongodb ObjectId
+  readonly userId = signal<number | null>(null);
+  readonly inputUser = signal<UserSchema | null>(null);
   //endregion: ---constructor
 
   //region: ---ngOnInit: groups loading
   groupsFromServer = signal<Group[]>([])
 
   ngOnInit() {
-    this.usersService.getGroups().subscribe(groups => {
-      this.groupsFromServer.set(groups);
-    })
+    // this.userId.set(Number(this.route.snapshot.params['id']))
+//this.userId.set(Number(params.get("id")) || null)
+    const token = this.authService.token;
+
+    this.route.paramMap.pipe(
+      map(params => Number(params.get('id')) || null),
+      tap(userId => {
+        this.userId.set(userId)
+      }),
+      switchMap(userId => userId ? this.usersService.getUser(userId, token) : of(
+        new UserSchema('', '')
+      )),
+      tap(user => {
+        this.inputUser.set(user);
+        this.model.set({
+          login: user.name,
+          email: user.email,
+          isActive: user.active,
+          password: ''
+        })
+      }),
+      switchMap(user => this.usersService.getGroups()),
+      tap(groups => {
+        this.groupsFromServer.set(groups);
+
+        const userGroups = this.inputUser()?.groups ?? [];
+
+        this.selectedGroups.set(
+          groups.filter(g => userGroups.some(ug => ug.id === g.id))
+        );
+      })
+    ).subscribe()
   }
   //endregion: ---ngOnInit groups loading
 
@@ -86,51 +120,15 @@ export class UserEdit implements OnInit{
   signUpForm = form(this.model, schemaPath => {
     required(schemaPath.login, {message: "Username is required"})
     minLength(schemaPath.login, 3, {message: "Username must have at least 3 characters"})
-    validateAsync(schemaPath.login, {
-      params: input => {
-        const login = input.value()
-        return new UserSchema(login, "")
-      },
-      factory: (params) => rxResource<string[], UserSchema>({
-        params: () => params() || new UserSchema('', ''),
-        stream: ({ params: user }) => this.authService.userConflicts(user)
-      }),
-      onSuccess: result => {
-        if (result && result.length > 0) {
-          return { kind: 'loginTaken', message: 'This login is already in use' }
-        }
-        return null
-      },
-      onError: error => null
-    })
     required(schemaPath.email, {message: "Email is required"})
     email(schemaPath.email, {message: "Invalid email"})
-    validateAsync(schemaPath.email, {
-      params: input => {
-        const email = input.value()
-        return new UserSchema('', email)
-      },
-      factory: (params) => rxResource<string[], UserSchema>({
-        params: () => params() || new UserSchema('', ''),
-        stream: ({ params: user }) => this.authService.userConflicts(user)
-      }),
-      onSuccess: result => {
-        if (result && result.length > 0) {
-          return { kind: 'emailTaken', message: 'This email is already in use' }
-        }
-        return null
-      },
-      onError: error => null
-    })
-    required(schemaPath.password, {message: "Password is required"})
   })
   //endregion: ---formDeclaration
 
-  //region: ---groups
+  //region: ---groups Selected/Toggle
   selectedGroups = signal<Group[]>([]);
 
   toggleGroup(group: Group, checked: boolean) {
-    console.log(group)
     this.selectedGroups.update(groups =>
       checked ? [...groups, group] : groups.filter(g => g.id !== group.id)
     );
@@ -141,19 +139,19 @@ export class UserEdit implements OnInit{
   //endregion: ---groups
 
 
-  signUp(event: any) {
-    console.log(this.selectedGroups())
-
-    return;
-    //region: ---UserFormat
+  save(event: any) {
     event.preventDefault();
+
+    //region: ---UserFormat
     const data = this.model()
-    const user = new UserSchema(data.login, data.email, undefined, undefined, data.password, data.isActive, this.selectedGroups())
+    const user = new UserSchema(data.login, data.email, this.userId() || undefined, undefined, data.password, data.isActive, this.selectedGroups())
     //endregion: ---UserFormat
 
-    // AuthService Sign-Up
-    this.authService.sign_up(user).subscribe(savedUser => {
-      this.router.navigateByUrl('/dashboard');
+    const token = this.authService.token;
+
+    // UsersService Add New User
+    this.usersService.saveUser(user, token).subscribe(createdUser => {
+      this.router.navigateByUrl(dashboardUsersRoute);
     })
   }
 }

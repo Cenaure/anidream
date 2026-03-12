@@ -58,6 +58,9 @@
       ],
       "@spartan-ng/helm/checkbox": [
         "./src/app/shared/ui/checkbox/src/index.ts"
+      ],
+      "@spartan-ng/helm/pagination": [
+        "./src/app/shared/ui/pagination/src/index.ts"
       ]
     }
   },

@@ -30,12 +30,22 @@
           @for (headerGroup of _table.getHeaderGroups(); track headerGroup.id) {
             <tr hlmTr>
               @for (header of headerGroup.headers; track header.id) {
-                <th hlmTh [attr.colSpan]="header.colSpan">
+                <th hlmTh [attr.colSpan]="header.colSpan"
+                    (click)="header.column.getCanSort() && header.column.toggleSorting()">
                   @if (!header.isPlaceholder) {
-                    <ng-container
-                      *flexRender="header.column.columnDef.header; props: header.getContext(); let headerText"
-                    >
-                      <div [innerHTML]="headerText"></div>
+                    <ng-container *flexRender="header.column.columnDef.header; props: header.getContext(); let headerText">
+                      <div class="flex items-center gap-1" [class.cursor-pointer]="header.column.getCanSort()">
+                        <span [innerHTML]="headerText"></span>
+                        @if (header.column.getCanSort()) {
+                          @if (header.column.getIsSorted() === 'asc') {
+                            ↑
+                          } @else if (header.column.getIsSorted() === 'desc') {
+                            ↓
+                          } @else {
+                            ↕
+                          }
+                        }
+                      </div>
                     </ng-container>
                   }
                 </th>
@@ -64,11 +74,8 @@
                       </button>
                     </app-alert>
 
-                    <button class="text-zinc-400 hover:text-zinc-100 border border-zinc-700 hover:border-zinc-500 p-1.5 rounded-md transition-colors">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-                      </svg>
+                    <button class="cursor-pointer p-1 text-zinc-400 hover:text-zinc-100 border border-zinc-700 hover:border-zinc-500 rounded-md transition-colors" (click)="hrefToEditPage(row.original.id || -1)">
+                      <lucide-icon [img]="squarePenIcon" size="16" />
                     </button>
                   } @else {
                     <ng-container *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cell">
@@ -119,10 +126,8 @@
       <div class="text-muted-foreground text-sm">No Users Found</div>
     </div>
   }
-
-
 </div>
 
-<a routerLink="/dashboard/users/user-new" hlmBtn>
+<a [routerLink]="dashboardCreateUserRoute" hlmBtn>
   Add new user
 </a>

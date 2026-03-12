@@ -147,8 +147,9 @@ export class SignUp {
   errorMessage = signal('')
 
   signUp(event: any) {
-    //region: ---UserFormat
     event.preventDefault();
+
+    //region: ---UserFormat
     const data = this.model()
     const user = new UserSchema(data.login, data.email, undefined, undefined, data.password)
     //endregion: ---UserFormat
