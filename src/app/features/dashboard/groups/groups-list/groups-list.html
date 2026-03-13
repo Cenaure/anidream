@@ -1,0 +1,10 @@
+<div>
+  <h1 class="text-xl">Groups:</h1>
+
+  <div class="flex gap-2">
+    @for (group of groupsLoaded(); track group.id) {
+      <p>{{group.name}}</p>
+    }
+  </div>
+
+</div>

@@ -61,6 +61,9 @@
       ],
       "@spartan-ng/helm/pagination": [
         "./src/app/shared/ui/pagination/src/index.ts"
+      ],
+      "@spartan-ng/helm/tabs": [
+        "./src/app/shared/ui/tabs/src/index.ts"
       ]
     }
   },
