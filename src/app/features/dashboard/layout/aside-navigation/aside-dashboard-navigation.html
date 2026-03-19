@@ -1,0 +1,19 @@
+<aside class="flex h-screen w-56 flex-col border-r border-zinc-800 bg-sidebar px-3 py-5 text-sidebar-foreground">
+  <h1>Dashboard</h1>
+  <nav class="flex flex-col gap-1">
+    <p class="mb-1 mt-4 px-2 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+      Users
+    </p>
+
+    @for (item of usersNav(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        <span class="text-base leading-none">{{ item.icon }}</span>
+        {{ item.label }}
+      </a>
+    }
+  </nav>
+</aside>

@@ -1,7 +1,11 @@
-<hlm-tabs tab="list" orientation="vertical" >
-  <hlm-tabs-list>
-    <button hlmTabsTrigger="list" routerLink="list" class="cursor-pointer">Group List</button>
-    <button hlmTabsTrigger="edit" routerLink="edit" class="cursor-pointer">Group Edit</button>
-  </hlm-tabs-list>
-</hlm-tabs>
-<router-outlet></router-outlet>
+<div class="flex gap-4">
+  <hlm-tabs [tab]="currentTab()" orientation="vertical" >
+    <hlm-tabs-list>
+      <button hlmTabsTrigger="list" routerLink="list" class="cursor-pointer">List Groups</button>
+      <button hlmTabsTrigger="edit" routerLink="new" class="cursor-pointer">New Group</button>
+    </hlm-tabs-list>
+  </hlm-tabs>
+  <div class="rounded-md w-full min-h-50">
+    <router-outlet></router-outlet>
+  </div>
+</div>

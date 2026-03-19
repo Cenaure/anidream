@@ -9,9 +9,8 @@ import {Navbar} from './shared/layout/navbar/navbar';
   template: `
     <div>
       <app-navbar />
-      <main class="mx-auto max-w-5xl">
+      <main class="mx-auto max-w-screen-xl relative">
         <router-outlet />
-
       </main>
       <hlm-toaster position="bottom-center" richColors closeButton theme="dark" ngSkipHydration />
     </div>

@@ -1,5 +1,4 @@
 import {Routes} from '@angular/router';
-import {GroupsRoutes} from './groups/groups.routes';
 
 export const DASHBOARD_ROUTES: Routes = [
   { // Dashboard Layout
@@ -29,8 +28,8 @@ export const DASHBOARD_ROUTES: Routes = [
       },
       //Groups
       {
-        path: "groups",
-        loadChildren: () => GroupsRoutes,
+        path: 'groups',
+        loadChildren: () => import('./groups/groups.routes').then(r => r.GROUPS_ROUTES),
       }
     ]
   }
