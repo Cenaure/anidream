@@ -98,8 +98,8 @@ export class GroupsList implements OnInit {
     )
   }
 
-  routeToEditPage(id: number) {
-    this.router.navigateByUrl(dashboardEditGroupRoute(id.toString())) //TODO object id
+  routeToEditPage(id: string) {
+    this.router.navigateByUrl(dashboardEditGroupRoute(id))
   }
 
   protected readonly squarePenIcon = SquarePenIcon;

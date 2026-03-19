@@ -63,7 +63,7 @@ export class GroupEditChild {
 
   id = computed(() => this.group()?.id);
 
-  loadGroup(groupId: number) {
+  loadGroup(groupId: string) {
     this.usersService.getGroup(groupId).subscribe(group => {
       this.model.set({
         name: group.name,
@@ -78,12 +78,12 @@ export class GroupEditChild {
   saveGroup(event: any) {
     event.preventDefault();
 
-    const token = this.authService.token
+    // const token = this.authService.token
 
     const perms = this.model().permissions.split(',').map(value => value.trim()).filter(value => value);
 
     const groupToSave = new Group(this.model().name, perms, this.id());
-    this.usersService.saveGroup(token, groupToSave).subscribe(() => {
+    this.usersService.saveGroup(groupToSave).subscribe(() => {
       this.groupSaved.emit(groupToSave);
     });
   }

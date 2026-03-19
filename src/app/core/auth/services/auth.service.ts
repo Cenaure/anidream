@@ -1,12 +1,33 @@
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {catchError, map, Observable, of, tap} from 'rxjs';
 import {computed, inject, Injectable, PLATFORM_ID, signal} from '@angular/core';
-import {AuthSchema} from '../_schemas/auth.schema';
 import {MessageService} from '../../../shared/services/message.service';
 import {ErrorService} from '../../../shared/utils/processError';
 import {isPlatformBrowser} from '@angular/common';
 import {environment} from '../../../../env/dev.env';
-import {UserSchema} from '../../../features/dashboard/users/_schemas/user.schema';
+
+//region: ---DTOs
+export interface SignInDTO {
+  username_or_email: string;
+  password: string;
+}
+
+export interface SignUpDTO {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface UserDTO {
+  id?: string;
+  username: string;
+  email: string;
+  groups: string[];
+  last_login?: string;
+}
+//endregion: ---DTOs
+
+// AuthService Based on rust-server repo
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +35,6 @@ import {UserSchema} from '../../../features/dashboard/users/_schemas/user.schema
 export class AuthService {
   //region: ---constructor
   private readonly apiUrl = environment.apiUrl;
-
   private readonly http = inject(HttpClient);
   private readonly messageService = inject(MessageService);
   private readonly errorService = inject(ErrorService);
@@ -23,8 +43,9 @@ export class AuthService {
   //endregion: ---constructor
 
   //region: ---Session Management
+  // Only needed to have isLoggedIn, session is stored at http-only cookie
   private readonly _loggedUser = signal<string | null>(
-    this.isBrowser ? localStorage.getItem("loggedUser") : null
+    this.isBrowser ? localStorage.getItem('loggedUser') : null
   );
 
   private setLoggedUser(name: string | null) {
@@ -36,79 +57,57 @@ export class AuthService {
     this._loggedUser.set(name);
   }
 
-  // Public
   readonly loggedUser = this._loggedUser.asReadonly();
   readonly isLoggedIn = computed(() => this._loggedUser() !== null);
-
-  set token(token: string) {
-    if (this.isBrowser) { // @ts-ignore
-      localStorage.setItem('token', token);
-    }
-  }
-
-  get token() {
-    // @ts-ignore
-    return this.isBrowser ? localStorage.getItem('token') ?? '' : '';
-  }
   //endregion: ---Session Management
 
-  login(auth
-        :
-        AuthSchema
-  ):
-    Observable<boolean> {
-    return this.http.post(`${this.apiUrl}/login`, auth, {responseType: "text"})
-      .pipe(
-        tap(token => {
-          this.token = token;
-          this.setLoggedUser(auth.name)
-          this.messageService.success("user " + auth.name + " is logged in");
-        }),
-        map(token => true),
-        catchError(error => {
-          if (error instanceof HttpErrorResponse) {
-            if (error.status === 401) {
-              return of(false);
-            }
-          }
-
-          return this.errorService.processError(error);
-        })
-      )
-  }
-
-  sign_up(user: UserSchema): Observable<UserSchema> {
-    return this.http.post<UserSchema>(`${this.apiUrl}/register`, user).pipe(
+  //region: ---Auth
+  signIn(dto: SignInDTO): Observable<boolean> {
+    return this.http.post<void>(
+      `${this.apiUrl}/auth/sign-in`,
+      dto,
+      { withCredentials: true }
+    ).pipe(
       tap(() => {
-        this.messageService.success(`Welcome, ${user.name} you have been signed up successfully`);
+        this.setLoggedUser(dto.username_or_email);
+        this.messageService.success(`Welcome back, ${dto.username_or_email}`);
       }),
+      map(() => true),
       catchError(error => {
-        return this.errorService.processError(error);
-      })
-    )
-  }
-
-  userConflicts(user: UserSchema): Observable<string[]> {
-    return this.http.post<string[]>(`${this.apiUrl}/user-conflicts`, user).pipe(
-      catchError(error => {
-        return this.errorService.processError(error);
-      })
-    )
-  }
-
-  logout(): Observable<boolean> {
-    return this.http.get<void>(`${this.apiUrl}/logout/${this.token}`).pipe(
-      map(() => {
-        this.setLoggedUser(null);
-        if (this.isBrowser) { // @ts-ignore
-          localStorage.removeItem('token');
+        if (error instanceof HttpErrorResponse && error.status === 401) {
+          return of(false);
         }
-        this.messageService.success('Logged out');
-        return true;
-      }),
-      catchError(error => {
         return this.errorService.processError(error);
       })
     );
   }
+
+  signUp(dto: SignUpDTO): Observable<UserDTO> {
+    return this.http.post<UserDTO>(
+      `${this.apiUrl}/auth/sign-up`,
+      dto,
+      { withCredentials: true }
+    ).pipe(
+      tap(user => {
+        this.setLoggedUser(user.username);
+        this.messageService.success(`Welcome, ${user.username}!`);
+      }),
+      catchError(error => this.errorService.processError(error))
+    );
+  }
+
+  logout(): Observable<boolean> {
+    return this.http.get<void>(
+      `${this.apiUrl}/auth/logout`,
+      { withCredentials: true }
+    ).pipe(
+      map(() => {
+        this.setLoggedUser(null);
+        this.messageService.success('Logged out');
+        return true;
+      }),
+      catchError(error => this.errorService.processError(error))
+    );
+  }
+  //endregion: ---Auth
 }

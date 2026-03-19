@@ -21,6 +21,7 @@ import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
 import {rxResource} from '@angular/core/rxjs-interop';
+import {dashboardRoute, signInRoute} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-sign-up',
@@ -63,7 +64,7 @@ export class SignUp {
   // aka react hook forms
   // but without zod validation :(
   model = signal({
-    login: '', // Name
+    username: '', // Name
     email: '',
     password: '',
     confirmPassword: '',
@@ -71,45 +72,10 @@ export class SignUp {
 
   // Oh, they actually have zod validation 0_0
   signUpForm = form(this.model, schemaPath => {
-    required(schemaPath.login, {message: "Username is required"})
-    minLength(schemaPath.login, 3, {message: "Username must have at least 3 characters"})
-    validateAsync(schemaPath.login, {
-      params: input => {
-        const login = input.value()
-        return new UserSchema(login, "")
-      },
-      factory: (params) => rxResource<string[], UserSchema>({
-        params: () => params() || new UserSchema('', ''),
-        stream: ({ params: user }) => this.authService.userConflicts(user)
-      }),
-      onSuccess: result => {
-        if (result && result.length > 0) {
-          return { kind: 'loginTaken', message: 'This login is already in use' }
-        }
-        return null
-      },
-      onError: error => null
-    })
+    required(schemaPath.username, {message: "Username is required"})
+    minLength(schemaPath.username, 3, {message: "Username must have at least 3 characters"})
     required(schemaPath.email, {message: "Email is required"})
     email(schemaPath.email, {message: "Invalid email"})
-    validateAsync(schemaPath.email, {
-      params: input => {
-        const email = input.value()
-        return new UserSchema('', email)
-      },
-      factory: (params) => rxResource<string[], UserSchema>({
-        params: () => params() || new UserSchema('', ''),
-        stream: ({ params: user }) => this.authService.userConflicts(user)
-      }),
-      onSuccess: result => {
-        if (result && result.length > 0) {
-          return { kind: 'emailTaken', message: 'This email is already in use' }
-        }
-        return null
-      },
-      onError: error => null
-    })
-    //pattern(schemaPath.email, /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/, {message: "Invalid email"})
     required(schemaPath.password, {message: "Password is required"})
     validate(schemaPath.password, ({ value }) => {
       const password = value();
@@ -151,12 +117,14 @@ export class SignUp {
 
     //region: ---UserFormat
     const data = this.model()
-    const user = new UserSchema(data.login, data.email, undefined, undefined, data.password)
+    const user = new UserSchema(data.username, data.email, undefined, undefined, data.password)
     //endregion: ---UserFormat
 
     // AuthService Sign-Up
-    this.authService.sign_up(user).subscribe(savedUser => {
-      this.router.navigateByUrl('/dashboard');
+    this.authService.signUp(user).subscribe(savedUser => {
+      this.router.navigateByUrl(dashboardRoute);
     })
   }
+
+  protected readonly signInRoute = signInRoute;
 }

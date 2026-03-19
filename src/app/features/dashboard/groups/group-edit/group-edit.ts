@@ -22,7 +22,7 @@ export class GroupEdit implements OnInit {
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      map(params => Number(params.get('id')) || undefined),
+      map(params => params.get('id') || undefined),
       tap(id => {
         this.group.set({...this.group(), id});
       })).subscribe()

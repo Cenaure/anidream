@@ -1,6 +1,6 @@
 export class AuthSchema {
   constructor(
-    public name: string,
+    public username_or_email: string, // Server will validate it
     public password: string
   ){}
 }
