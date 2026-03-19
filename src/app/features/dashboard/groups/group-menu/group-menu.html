@@ -1,9 +1,7 @@
-<hlm-tabs tab="home">
+<hlm-tabs tab="list" orientation="vertical" >
   <hlm-tabs-list>
-    <button hlmTabsTrigger="home">Home</button>
-    <button hlmTabsTrigger="settings">Settings</button>
+    <button hlmTabsTrigger="list" routerLink="list" class="cursor-pointer">Group List</button>
+    <button hlmTabsTrigger="edit" routerLink="edit" class="cursor-pointer">Group Edit</button>
   </hlm-tabs-list>
-  <hlm-tabs-content tab="home">...</hlm-tabs-content>
-  <hlm-tabs-content tab="settings">...</hlm-tabs-content>
 </hlm-tabs>
 <router-outlet></router-outlet>

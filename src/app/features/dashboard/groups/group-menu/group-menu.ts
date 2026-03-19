@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {RouterLink, RouterOutlet} from '@angular/router';
+import {RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 import {dashboardEditGroupRoute, dashboardListGroupsRoute} from '../../../../shared/utils/paths';
 
@@ -8,7 +8,8 @@ import {dashboardEditGroupRoute, dashboardListGroupsRoute} from '../../../../sha
   imports: [
     RouterOutlet,
     HlmTabsImports,
-    RouterLink
+    RouterLink,
+    RouterLinkActive,
   ],
   templateUrl: './group-menu.html',
 })
