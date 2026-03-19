@@ -2,7 +2,7 @@
 
 export const AUTH_ROUTES = [
   {
-    path: 'login',
+    path: 'sign-in',
     loadComponent: () => import('./pages/login/login').then(p => p.LoginPage),
   },
   {
