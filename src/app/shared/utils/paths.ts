@@ -5,9 +5,9 @@ export const dashboardEditUserRoute = (userId: string | number) => dashboardUser
 export const dashboardCreateUserRoute = dashboardUsersRoute + "/user-new"
 
 export const dashboardGroupsRoute = dashboardRoute + "/groups"
-export const dashboardNewGroupRoute = dashboardUsersRoute + "/groups/new"
-export const dashboardEditGroupRoute = (id: string) => dashboardUsersRoute + `/groups/edit/${id}`
-export const dashboardListGroupsRoute = dashboardUsersRoute + "/groups/list"
+export const dashboardNewGroupRoute = dashboardGroupsRoute + "/new"
+export const dashboardEditGroupRoute = (id: string) => dashboardGroupsRoute + `/edit/${id}`
+export const dashboardListGroupsRoute = dashboardGroupsRoute + "/list"
 
 
 export const authRoute = "/auth"

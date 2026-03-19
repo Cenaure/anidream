@@ -73,4 +73,24 @@ export class UsersService {
       }),
     )
   }
+
+  getGroup(id: number): Observable<Group> {
+    return this.http.get<Group>(`${this.apiUrl}/group/${id}`).pipe(
+      map(g => Group.clone(g)),
+      catchError(error => {
+        return this.errorService.processError(error);
+      }),
+    )
+  }
+
+  saveGroup(token: string, groupToSave: Group): Observable<Group> {
+    return this.http.post<Group>(`${this.apiUrl}/groups/${token}`, groupToSave).pipe(
+      map(jsonGroup => Group.clone(jsonGroup)),
+      catchError(error => this.errorService.processError(error)),
+      tap(() => {
+        this.messageService.success('Group added/edited successfully.');
+      }),
+    )
+  }
+
 }

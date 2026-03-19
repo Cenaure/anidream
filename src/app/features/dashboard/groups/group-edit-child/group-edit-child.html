@@ -33,7 +33,13 @@
     </div>
 
     <div hlmCardFooter class="flex-col gap-2">
-      <button type="submit" form="signup-form" hlmBtn class="w-full cursor-pointer" [disabled]="groupEditForm().invalid()">Create</button>
+      <button type="submit" form="group-edit-form" hlmBtn class="w-full cursor-pointer" [disabled]="groupEditForm().invalid()">
+        @if (id()) {
+          Save
+        } @else {
+          Create
+        }
+      </button>
     </div>
   </section>
 </div>
