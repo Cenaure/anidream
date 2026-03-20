@@ -31,6 +31,10 @@ export const DASHBOARD_ROUTES: Routes = [
       {
         path: 'groups',
         loadChildren: () => import('./groups/groups.routes').then(r => r.GROUPS_ROUTES),
+      },
+      {
+        path: 'anime',
+        loadChildren: () => import('./anime/anime.router').then(r => r.ANIME_ROUTES)
       }
     ]
   }

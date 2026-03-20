@@ -14,8 +14,6 @@ import {dashboardEditGroupRoute, dashboardListGroupsRoute} from '../../../../sha
 })
 export class GroupMenu implements OnInit{
   constructor(private router: Router) {}
-  protected readonly dashboardListGroupsRoute = dashboardListGroupsRoute;
-  protected readonly dashboardEditGroupRoute = dashboardEditGroupRoute;
 
   currentTab = signal<string>("list")
 

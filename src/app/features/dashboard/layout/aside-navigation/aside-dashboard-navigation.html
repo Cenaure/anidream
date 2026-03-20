@@ -15,5 +15,20 @@
         {{ item.label }}
       </a>
     }
+
+    <p class="mb-1 mt-4 px-2 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+      Anime
+    </p>
+
+    @for (item of animeNav(); track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-accent text-accent-foreground font-medium"
+        class="flex items-center gap-2.5 rounded-md px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+      >
+        <span-lucide [img]="item.icon" class="text-base leading-none"></span-lucide>
+        {{ item.label }}
+      </a>
+    }
   </nav>
 </aside>
