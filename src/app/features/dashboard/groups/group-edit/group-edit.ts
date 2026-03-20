@@ -13,19 +13,19 @@ import {map, tap} from 'rxjs';
   templateUrl: './group-edit.html',
 })
 export class GroupEdit implements OnInit {
+  //region: ---constructor
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute
   ) {}
+  //endregion: ---constructor
 
   group = signal<Group>(new Group('', []))
 
   ngOnInit() {
-    this.route.paramMap.pipe(
-      map(params => params.get('id') || undefined),
-      tap(id => {
-        this.group.set({...this.group(), id});
-      })).subscribe()
+    this.route.data.subscribe(data => {
+      if(data['group']) this.group.set(data['group'])
+    })
   }
 
   saved(savedGroup: Group) {

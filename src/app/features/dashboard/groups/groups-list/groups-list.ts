@@ -96,6 +96,7 @@ export class GroupsList implements OnInit {
         this.groupsLoaded.set(groups)
       }
     )
+    console.log(this.groupsLoaded())
   }
 
   routeToEditPage(id: string) {

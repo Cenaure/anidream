@@ -34,10 +34,10 @@ export class GroupEditChild {
     private readonly route: ActivatedRoute,
     private readonly usersService: UsersService,
   ) {
-    effect(() => {
-      const id = this.group()?.id;
-      if (id) this.loadGroup(id);
-    });
+    // effect(() => {
+    //   const id = this.group()?.id;
+    //   if (id) this.loadGroup(id);
+    // });
   }
 
   group = input<Group>()

@@ -33,8 +33,10 @@ export class UserSchema {
 
 export class Group {
 
-  static clone(g: Group): Group {
-    return new Group(g.name, [...g.permissions], g.id);
+  static clone(g: any): Group {
+    const id = g._id?.$oid ?? g._id ?? g.id;
+
+    return new Group(g.name, [...g.permissions], id);
   }
 
   constructor(
