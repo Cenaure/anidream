@@ -27,7 +27,7 @@ export class AnimeService {
   //endregion: ---constructor
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({ 'X-Auth-Token': 'igk99utkghukdgbtnq5u6foldp' });
+    return new HttpHeaders({ 'X-Auth-Token': 'v36t9vpssk022vr97lhju9joot' });
   }
 
   getFilms(orderBy?: string, indexFrom?: number, indexTo?: number, descending?: boolean, search?: string): Observable<FilmsDto> {

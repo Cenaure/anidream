@@ -1,0 +1,48 @@
+<div class="py-20 bg-zinc-900 px-4">
+  <div class="gap-2 flex">
+    <button hlmBtn (click)="onConnect()" class="cursor-pointer" [disabled]="(isConnected() || (model().name.length == 0))">
+      Connect
+    </button>
+
+    <button hlmBtn (click)="onDisconnect()" class="cursor-pointer" [disabled]="!isConnected()">
+      Disconnect
+    </button>
+  </div>
+
+<form class="space-y-6 mt-4 max-w-lg" (ngSubmit)="onSend()">
+  <div class="grid gap-2">
+    <label hlmLabel for="name">Name</label>
+    <input type="text" [formField]="userEditForm.name" hlmInput autofocus (keyup.enter)="onConnect()"/>
+    <p class="text-red-500 mt-1">
+      @if (userEditForm.name().invalid()) {
+        {{userEditForm.name().errors()[0].message}}
+      }
+    </p>
+  </div>
+
+  @if (isConnected()) {
+    <div class="grid gap-2">
+      <label hlmLabel for="name">Message</label>
+      <input type="text" [formField]="userEditForm.message" hlmInput #inputMsg />
+      <p class="text-red-500 mt-1">
+        @if (userEditForm.message().invalid()) {
+          {{userEditForm.message().errors()[0].message}}
+        }
+      </p>
+    </div>
+  }
+
+  <button type="submit" hlmBtn>Submit</button>
+</form>
+
+  @if (isConnected()) {
+    <div class="flex-col flex my-4">
+      @for (message of messages(); track message) {
+        <div class="flex border-b border-b-slate-700 py-2 gap-4">
+          <p class="font-bold">{{message.name}}:</p>
+          <p class="font-bold">{{message.message}}</p>
+        </div>
+      }
+    </div>
+  }
+</div>
