@@ -3,8 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'dashboard/users',
-    pathMatch: 'full',
+    loadComponent: () => import("./pages/home/home.component").then(c => c.HomeComponent),
   },
   {
     path: "auth",
@@ -17,5 +16,14 @@ export const routes: Routes = [
   {
     path: "dashboard",
     loadChildren: () => import("./features/dashboard/dashboard.router").then(r => r.DASHBOARD_ROUTES)
+  },
+  {
+    path: "chat",
+    loadComponent: () => import("./features/chat/chat").then(c => c.Chat)
+  },
+  {
+    path: "**",
+    redirectTo: "",
+    pathMatch: "full",
   }
 ];

@@ -9,21 +9,21 @@
       <form id="useredit-form" (ngSubmit)="save($event)">
         <div class="flex flex-col gap-4">
           <div class="grid gap-2">
-            <label hlmLabel for="login">Name</label>
-            <input type="text" [formField]="signUpForm.login" hlmInput />
+            <label hlmLabel for="username">Username</label>
+            <input type="text" [formField]="userEditForm.username" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.login().invalid()) {
-                {{signUpForm.login().errors()[0].message}}
+              @if (userEditForm.username().invalid()) {
+                {{userEditForm.username().errors()[0].message}}
               }
             </p>
           </div>
 
           <div class="grid gap-2">
             <label hlmLabel for="email">Email</label>
-            <input type="email" [formField]="signUpForm.email"  hlmInput />
+            <input type="email" [formField]="userEditForm.email"  hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.email().invalid()) {
-                {{signUpForm.email().errors()[0].message}}
+              @if (userEditForm.email().invalid()) {
+                {{userEditForm.email().errors()[0].message}}
               }
             </p>
           </div>
@@ -32,20 +32,20 @@
             <div class="flex items-center">
               <label hlmLabel for="password">Password</label>
             </div>
-            <input type="password" [formField]="signUpForm.password" hlmInput />
+            <input type="password" [formField]="userEditForm.password" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.password().invalid()) {
-                {{signUpForm.password().errors()[0].message}}
+              @if (userEditForm.password().invalid()) {
+                {{userEditForm.password().errors()[0].message}}
               }
             </p>
           </div>
 
-          <div class="grid gap-2">
-            <label class="flex items-center" hlmLabel>
-              <hlm-switch class="mr-2" [formField]="signUpForm.isActive"></hlm-switch>
-              Active
-            </label>
-          </div>
+<!--          <div class="grid gap-2">-->
+<!--            <label class="flex items-center" hlmLabel>-->
+<!--              <hlm-switch class="mr-2" [formField]="signUpForm.isActive"></hlm-switch>-->
+<!--              Active-->
+<!--            </label>-->
+<!--          </div>-->
 
           <div class="flex justify-between">
             @for (group of groupsFromServer(); track group.id) {
@@ -70,7 +70,7 @@
     </div>
 
     <div hlmCardFooter class="flex-col gap-2">
-      <button type="submit" form="useredit-form" hlmBtn class="w-full cursor-pointer" [disabled]="signUpForm().invalid()">Create</button>
+      <button type="submit" form="useredit-form" hlmBtn class="w-full cursor-pointer" [disabled]="userEditForm().invalid()">Create</button>
     </div>
   </section>
 </div>

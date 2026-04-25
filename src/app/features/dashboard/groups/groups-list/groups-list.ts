@@ -96,10 +96,11 @@ export class GroupsList implements OnInit {
         this.groupsLoaded.set(groups)
       }
     )
+    console.log(this.groupsLoaded())
   }
 
-  routeToEditPage(id: number) {
-    this.router.navigateByUrl(dashboardEditGroupRoute(id.toString())) //TODO object id
+  routeToEditPage(id: string) {
+    this.router.navigateByUrl(dashboardEditGroupRoute(id))
   }
 
   protected readonly squarePenIcon = SquarePenIcon;

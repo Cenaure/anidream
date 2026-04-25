@@ -9,11 +9,11 @@
       <form id="signup-form" (ngSubmit)="signUp($event)">
         <div class="flex flex-col gap-4">
           <div class="grid gap-2">
-            <label hlmLabel for="login">Name</label>
-            <input type="text" [formField]="signUpForm.login" hlmInput />
+            <label hlmLabel for="username">Username</label>
+            <input type="text" [formField]="signUpForm.username" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.login().invalid()) {
-                {{signUpForm.login().errors()[0].message}}
+              @if (signUpForm.username().invalid()) {
+                {{signUpForm.username().errors()[0].message}}
               }
             </p>
           </div>
@@ -63,7 +63,7 @@
 
     <div hlmCardFooter class="flex-col gap-2">
       <button type="submit" form="signup-form" hlmBtn class="w-full cursor-pointer" [disabled]="signUpForm().invalid()">Sign Up</button>
-      <button routerLink="/auth/login" hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign In</button>
+      <button [routerLink]="signInRoute" hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign In</button>
     </div>
   </section>
 </div>

@@ -1,96 +1,105 @@
-import {catchError, defaultIfEmpty, map, Observable, tap} from 'rxjs';
-import {Group, UserSchema} from '../_schemas/user.schema';
-import {HttpClient} from '@angular/common/http';
-import {ErrorService} from '../../../../shared/utils/processError';
-import {Injectable} from '@angular/core';
-import {environment} from '../../../../../env/dev.env';
-import {MessageService} from '../../../../shared/services/message.service';
+import { catchError, defaultIfEmpty, map, Observable, tap } from 'rxjs';
+import { Group, UserSchema } from '../_schemas/user.schema';
+import { HttpClient } from '@angular/common/http';
+import { ErrorService } from '../../../../shared/utils/processError';
+import { inject, Injectable } from '@angular/core';
+import { environment } from '../../../../../env/dev.env';
+import { MessageService } from '../../../../shared/services/message.service';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class UsersService {
-  //region: ---constructor
-  apiUrl = environment.apiUrl;
+  private readonly apiUrl = environment.apiUrl;
+  private readonly http = inject(HttpClient);
+  private readonly errorService = inject(ErrorService);
+  private readonly messageService = inject(MessageService);
 
-  constructor(
-    private readonly http: HttpClient,
-    private readonly errorService: ErrorService,
-    private readonly messageService: MessageService
-  ) {}
-  //endregion: ---constructor
-
+  //region: ---Users
   getUsers(): Observable<UserSchema[]> {
-    return this.http.get<UserSchema[]>(`${this.apiUrl}/users`).pipe(
-      map(jsonUsers => jsonUsers.map((u: UserSchema) => UserSchema.clone(u))),
+    return this.http.get<UserSchema[]>(`${this.apiUrl}/users/`).pipe(
+      map(users => users.map(u => UserSchema.clone(u))),
       catchError(error => this.errorService.processError(error))
     );
   }
 
-  getUser(id: number, token: string): Observable<UserSchema> {
-    return this.http.get<UserSchema>(`${this.apiUrl}/user/${id}/${token}`).pipe(
-      map(jsonUser => UserSchema.clone(jsonUser)),
-      catchError(error => this.errorService.processError(error))
-    )
-  }
-
-  getExtendedUsers(token: string): Observable<UserSchema[]> {
-    console.log(token)
-    return this.http.get<UserSchema[]>(`${this.apiUrl}/users/` + token).pipe(
-      map(jsonUsers => jsonUsers.map(user => UserSchema.clone(user))),
+  getUser(id: string): Observable<UserSchema> {
+    return this.http.get<UserSchema>(`${this.apiUrl}/users/${id}`).pipe(
+      map(u => UserSchema.clone(u)),
       catchError(error => this.errorService.processError(error))
     );
   }
 
-  saveUser(user: UserSchema, token: string): Observable<UserSchema> {
-    return this.http.post<UserSchema>(`${this.apiUrl}/users/${token}`, user).pipe(
-      map(jsonUser => UserSchema.clone(jsonUser)),
-      catchError(error => this.errorService.processError(error)),
-      tap(() => {
-        this.messageService.success('User added/edited successfully.');
-      }),
-    )
+  saveUser(user: UserSchema): Observable<UserSchema> {
+    if (user.id) {
+      // Edit
+      return this.http.patch<UserSchema>(`${this.apiUrl}/users/${user.id}`, user).pipe(
+        map(u => UserSchema.clone(u)),
+        tap(() => this.messageService.success('User updated successfully.')),
+        catchError(error => this.errorService.processError(error))
+      );
+    } else {
+      // Create
+      return this.http.post<UserSchema>(`${this.apiUrl}/users/`, user).pipe(
+        map(u => UserSchema.clone(u)),
+        tap(() => this.messageService.success('User created successfully.')),
+        catchError(error => this.errorService.processError(error))
+      );
+    }
   }
 
-  deleteUser(id: number, token: string): Observable<boolean> {
-    return this.http.delete<string[]>(`${this.apiUrl}/user/${id}/${token}`).pipe(
+  deleteUser(id: string): Observable<boolean> {
+    return this.http.delete<void>(`${this.apiUrl}/users/${id}`).pipe(
       map(() => {
         this.messageService.success('User deleted successfully.');
-        return true
+        return true;
       }),
-      catchError(error => {
-        return this.errorService.processError(error);
-      }),
-      defaultIfEmpty(false)
-    )
-  }
-
-  getGroups(): Observable<Group[]> {
-    return this.http.get<Group[]>(`${this.apiUrl}/groups`).pipe(
-      map(jsongroups => jsongroups.map(g => Group.clone(g))),
-      catchError(error => {
-        return this.errorService.processError(error);
-      }),
-    )
-  }
-
-  getGroup(id: number): Observable<Group> {
-    return this.http.get<Group>(`${this.apiUrl}/group/${id}`).pipe(
-      map(g => Group.clone(g)),
-      catchError(error => {
-        return this.errorService.processError(error);
-      }),
-    )
-  }
-
-  saveGroup(token: string, groupToSave: Group): Observable<Group> {
-    return this.http.post<Group>(`${this.apiUrl}/groups/${token}`, groupToSave).pipe(
-      map(jsonGroup => Group.clone(jsonGroup)),
       catchError(error => this.errorService.processError(error)),
-      tap(() => {
-        this.messageService.success('Group added/edited successfully.');
-      }),
-    )
+      defaultIfEmpty(false)
+    );
+  }
+  //endregion: ---Users
+
+  //region: ---Groups
+  getGroups(): Observable<Group[]> {
+    return this.http.get<Group[]>(`${this.apiUrl}/groups/`).pipe(
+      map(groups => groups.map(g => Group.clone(g))),
+      catchError(error => this.errorService.processError(error))
+    );
   }
 
+  getGroup(id: string): Observable<Group> {
+    return this.http.get<Group>(`${this.apiUrl}/groups/${id}`).pipe(
+      map(g => Group.clone(g)),
+      catchError(error => this.errorService.processError(error))
+    );
+  }
+
+  saveGroup(group: Group): Observable<Group> {
+    if (group.id) {
+      // Edit
+      return this.http.patch<Group>(`${this.apiUrl}/groups/${group.id}`, group).pipe(
+        map(g => Group.clone(g)),
+        tap(() => this.messageService.success('Group updated successfully.')),
+        catchError(error => this.errorService.processError(error))
+      );
+    } else {
+      // Create
+      return this.http.post<Group>(`${this.apiUrl}/groups/`, group).pipe(
+        map(g => Group.clone(g)),
+        tap(() => this.messageService.success('Group created successfully.')),
+        catchError(error => this.errorService.processError(error))
+      );
+    }
+  }
+
+  deleteGroup(id: string): Observable<boolean> {
+    return this.http.delete<void>(`${this.apiUrl}/groups/${id}`).pipe(
+      map(() => {
+        this.messageService.success('Group deleted successfully.');
+        return true;
+      }),
+      catchError(error => this.errorService.processError(error)),
+      defaultIfEmpty(false)
+    );
+  }
+  //endregion: ---Groups
 }

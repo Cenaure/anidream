@@ -9,6 +9,7 @@ import {AuthService} from '../../services/auth.service';
 import {AuthSchema} from '../../_schemas/auth.schema';
 import {FormsModule} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
+import {dashboardUsersRoute, signUpRoute} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-login',
@@ -33,10 +34,10 @@ export class LoginPage {
   errorMessage = signal('')
 
   login() {
-    this.authService.login(this.auth).subscribe({
+    this.authService.signIn(this.auth).subscribe({
       next: success => {
         if (success) {
-          this.router.navigateByUrl('/dashboard/users')
+          this.router.navigateByUrl(dashboardUsersRoute)
         } else {
           this.errorMessage.set("Wrong name or password, try again.");
         }
@@ -44,4 +45,5 @@ export class LoginPage {
     })
   }
   //endregion: ---login
+  protected readonly signUpRoute = signUpRoute;
 }

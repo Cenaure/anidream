@@ -1,32 +1,47 @@
 export class UserSchema {
-  static clone(u: UserSchema): UserSchema {
-    return new UserSchema(u.name, u.email, u.id, u.lastLogin, u.password, u.active, u.groups?.map(g => Group.clone(g)));
+  static clone(u: any): UserSchema {
+    const id = u._id?.$oid ?? u._id ?? u.id;
+
+    const last_login = u.last_login?.$date
+      ? new Date(Number(u.last_login.$date.$numberLong))
+      : u.last_login ? new Date(u.last_login) : undefined;
+
+    return new UserSchema(
+      u.username,
+      u.email,
+      id,
+      last_login,
+      u.password ?? '',
+      u.groups?.map((g: any) => Group.clone(g)) ?? []
+    );
   }
 
   constructor(
-    public name: string,
+    public username: string,
     public email: string,
-    public id?: number,
-    public lastLogin?: Date,
+    public id?: string,
+    public last_login?: Date,
     public password = '',
-    public active = true,
+    // public active = true,
     public groups: Group[] = []
   ){}
 
   toString() {
-    return `${this.id ?? '?'}: ${this.name}, ${this.email}`;
+    return `${this.id ?? '?'}: ${this.username}, ${this.email}`;
   }
 }
 
 export class Group {
 
-  static clone(g: Group): Group {
-    return new Group(g.name, [...g.permissions], g.id);
+  static clone(g: any): Group {
+    const id = g._id?.$oid ?? g._id ?? g.id;
+
+    return new Group(g.name, [...g.permissions], id);
   }
 
   constructor(
     public name: string,
     public permissions: string[] = [],
-    public id?: number
+    public id?: string
   ){}
 }

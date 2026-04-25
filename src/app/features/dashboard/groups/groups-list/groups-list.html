@@ -29,7 +29,7 @@
                 @for (cell of row.getVisibleCells(); track $index) {
                   <td hlmTd>
                     @if (cell.column.id === 'actions') {
-                      <button class="cursor-pointer p-1 text-zinc-400 hover:text-zinc-100 border border-zinc-700 hover:border-zinc-500 rounded-md transition-colors" (click)="routeToEditPage(row.original.id || -1)">
+                      <button class="cursor-pointer p-1 text-zinc-400 hover:text-zinc-100 border border-zinc-700 hover:border-zinc-500 rounded-md transition-colors" (click)="routeToEditPage(row.original.id || '')">
                         <lucide-icon [img]="squarePenIcon" size="16" />
                       </button>
                     } @else {

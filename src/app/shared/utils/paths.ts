@@ -9,8 +9,10 @@ export const dashboardNewGroupRoute = dashboardGroupsRoute + "/new"
 export const dashboardEditGroupRoute = (id: string) => dashboardGroupsRoute + `/edit/${id}`
 export const dashboardListGroupsRoute = dashboardGroupsRoute + "/list"
 
+export const dashboardAnimeRoute = dashboardRoute + "/anime"
 
 export const authRoute = "/auth"
 export const signUpRoute = authRoute + "/sign-up"
 export const signInRoute = authRoute + "/sign-in"
 
+export const chatPageRoute = "/chat"

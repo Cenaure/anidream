@@ -74,9 +74,9 @@ export class UsersPage implements OnInit {
       cell: (info) => `<span>${info.getValue<number>() ?? '—'}</span>`,
     },
     {
-      accessorKey: 'name',
-      id: 'name',
-      header: 'Name',
+      accessorKey: 'username',
+      id: 'username',
+      header: 'Username',
       enableSorting: true,
       cell: (info) => `<span>${info.getValue<string>()}</span>`,
     },
@@ -88,13 +88,12 @@ export class UsersPage implements OnInit {
       cell: (info) => `<div class="lowercase">${info.getValue<string>()}</div>`,
     },
     {
-      accessorKey: 'lastLogin',
-      id: 'lastLogin',
+      accessorKey: 'last_login',
+      id: 'last_login',
       header: 'Last Login',
       enableSorting: true,
       cell: (info) => {
-        const date = info.getValue<Date | undefined>();
-        return `<span>${date ? new Date(date).toLocaleDateString() : '—'}</span>`;
+        return `<span>${info.getValue<Date>() ? info.getValue<Date>().toLocaleString() : '—'}</span>`;
       },
     },
     {
@@ -166,9 +165,9 @@ export class UsersPage implements OnInit {
   protected readonly _hlmMuted = hlmMuted;
 
   ngOnInit(): void {
-    const token = this.authService.token;
+    // const token = this.authService.token;
 
-    if (this.authService.isLoggedIn()) this.loadUsers(token);
+    if (this.authService.isLoggedIn()) this.loadUsers();
     else {
       this.usersService.getUsers().subscribe({
         next: (users) => this._users.set(users),
@@ -183,8 +182,8 @@ export class UsersPage implements OnInit {
     this._table.getColumn('email')?.setFilterValue(value);
   }
 
-  private loadUsers(token: string) {
-    this.usersService.getExtendedUsers(token).subscribe({
+  private loadUsers() {
+    this.usersService.getUsers().subscribe({
       next: (users) => {
         this._users.set(users)
       },
@@ -194,13 +193,13 @@ export class UsersPage implements OnInit {
 
   protected deleteUser(user: UserSchema): void {
     console.log('delete', user);
-    const token = this.authService.token;
-    this.usersService.deleteUser(user.id || -1, token).subscribe(success => {
-        if(success) this.loadUsers(token)
+    // const token = this.authService.token;
+    this.usersService.deleteUser(user.id || "").subscribe(success => {
+        if(success) this.loadUsers()
     })
   }
 
-  hrefToEditPage(id: number) {
+  hrefToEditPage(id: string) {
     this.router.navigateByUrl(dashboardEditUserRoute(id));
   }
 
