@@ -1,0 +1,33 @@
+<header class="sticky top-0 z-50">
+  <div class="absolute inset-x-0 top-0 h-15 overflow-hidden pointer-events-none">
+    <div class="absolute left-1/2 -translate-x-1/2 top-0 w-96 h-16 bg-violet-500/20 blur-3xl rounded-full"></div>
+  </div>
+
+  <div class="relative bg-zinc-900/60 backdrop-blur-lg rounded-b-3xl">
+    <div class="flex items-center justify-between max-w-screen-2xl mx-auto px-8 py-3">
+
+      <a routerLink="/" class="flex items-center gap-1 text-white font-bold text-lg">
+        <img ngSrc="/logo.webp" alt="logo" width="32" height="32" class="rounded-full">
+        <p>Ani<span class="text-violet-400">Dream</span></p>
+      </a>
+
+      <nav class="flex items-center gap-1">
+      </nav>
+
+      @if (!authService.isLoggedIn()) {
+        <a [routerLink]="signInRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
+          <ng-icon name="phosphorSignIn" />
+          Sign in
+        </a>
+      } @else {
+        <a routerLink="/" (click)="logout()" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
+          <ng-icon name="phosphorSignOut" />
+          Log out
+        </a>
+      }
+    </div>
+  </div>
+</header>
+<!--<a routerLink="/chat" class="absolute bottom-5 right-5 bg-violet-800 rounded-full aspect-square p-2 flex justify-center items-center cursor-pointer hover:bg-violet-700">-->
+<!--  Chat-->
+<!--</a>-->

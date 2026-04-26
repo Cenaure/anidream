@@ -1,0 +1,62 @@
+<div class="w-full mt-10">
+  <svg
+    viewBox="0 0 100 20"
+    preserveAspectRatio="none"
+    class="w-full h-10 block"
+  >
+    <path
+      d="M0 20 V0 Q0 20 20 20 H80 Q100 20 100 0 V20 Z"
+      class="fill-mauve-950 opacity-70"
+    />
+  </svg>
+
+  <footer class="relative w-full min-h-20">
+    <div class="inset-0 absolute bg-mauve-950 opacity-70 -z-1"></div>
+
+    <div class="max-w-screen-2xl mx-auto pt-12 space-y-12 opacity-100">
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 space-y-8 px-4 md:px-8 2xl:px-0">
+        <div class="flex flex-col gap-2">
+          <div class="flex items-center gap-2">
+            <img src="/logo.webp" alt="logo" class="w-10 h-10">
+            <span class="text-xl">AniDream</span>
+          </div>
+
+          <p class="text-muted-foreground">Powered by Jikan and MyAnimeList data.</p>
+        </div>
+
+        <div class="col-span-1 flex flex-col">
+          <p class="text-muted-foreground uppercase text-sm tracking-tight">Discover</p>
+          <nav class="flex flex-col mt-2 gap-1">
+            <a [routerLink]="topAnimeRoute" class="text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">Top Anime</a>
+            <a [routerLink]="randomAnimeRoute" class="text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">Random Anime</a>
+          </nav>
+        </div>
+
+        <div class="col-span-1 flex flex-col">
+          <p class="text-muted-foreground uppercase text-sm tracking-tight">Account</p>
+          <nav class="flex flex-col mt-2 gap-1">
+            <a [routerLink]="profileRoute" class="text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">Account</a>
+            <a [routerLink]="signInRoute" class="text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">Sign In</a>
+            <a [routerLink]="dashboardRoute" class="text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">Dashboard</a>
+          </nav>
+        </div>
+
+        <div class="col-span-1 flex flex-col">
+          <p class="text-muted-foreground uppercase text-sm tracking-tight">Links</p>
+          <nav class="flex flex-col mt-2 gap-1">
+            <a [routerLink]="websiteRepoRoute" class="flex gap-1 items-center text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">
+              <img src="/github-icon.svg" alt="github" class="w-4 h-4 inline mr-1 ">
+              <p>GitHub Repo</p>
+            </a>
+          </nav>
+        </div>
+      </div>
+
+      <div class="flex gap-1.5 w-full justify-center bg-zinc-950 opacity-90 rounded-t-full p-4">
+        <p>This website was built with Love by</p>
+        <a [href]="cenaureRoute" class="text-violet-300 underline underline-offset-2" target="_blank">Cénaure</a>
+      </div>
+    </div>
+  </footer>
+</div>

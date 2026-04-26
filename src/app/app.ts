@@ -1,18 +1,25 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {HlmToaster} from '@spartan-ng/helm/sonner';
-import {Navbar} from './shared/layout/navbar/navbar';
+import {NavbarComponent} from './shared/layout/navbar/navbar.component';
+import {BackgroundImageComponent} from './shared/components/background-image/background-image.component';
+import {FooterComponent} from './shared/layout/footer/footer.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HlmToaster, Navbar],
+  imports: [RouterOutlet, HlmToaster, NavbarComponent, BackgroundImageComponent, FooterComponent],
   template: `
-    <div>
-      <app-navbar />
-      <main class="mx-auto max-w-screen-xl relative">
-        <router-outlet />
+    <app-background-image />
+    <div class="min-h-screen leading-relaxed relative">
+      <app-navbar/>
+
+      <main class="mx-auto max-w-screen-2xl w-full min-h-[70dvh] relative">
+        <router-outlet/>
       </main>
-      <hlm-toaster position="bottom-center" richColors closeButton theme="dark" ngSkipHydration />
+
+      <app-footer />
+
+      <hlm-toaster position="bottom-center" richColors closeButton theme="dark" ngSkipHydration/>
     </div>
   `
 })

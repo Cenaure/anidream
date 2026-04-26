@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {TopAnimeComponent} from '../../features/anime/components/top-anime/top-anime.component';
+import {TopAnimeComponent} from '../../../features/anime/components/top-anime/top-anime.component';
 
 @Component({
   selector: 'app-home',

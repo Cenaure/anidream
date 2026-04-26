@@ -20,9 +20,9 @@ import {
     HlmAlertDialogTrigger,
     HlmAlertDialogPortal
   ],
-  templateUrl: './alert.html',
+  templateUrl: './alert.component.html',
 })
-export class Alert {
+export class AlertComponent {
   title = input<string>('Are you sure?');
   description = input<string>('This action cannot be undone.');
   cancelLabel = input<string>('Cancel');

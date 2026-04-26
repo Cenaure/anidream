@@ -1,0 +1,15 @@
+@if (character.character; as character) {
+  <div>
+    @if (character.images.webp && character.images.webp.image_url) {
+      <img [ngSrc]="character.images.webp.image_url || ''" width="200" height="500" alt="anime image" class="rounded-lg shadow-lg w-full h-auto aspect-3/4 object-cover">
+    } @else if (character.images.jpg && character.images.jpg.image_url) {
+      <img [ngSrc]="character.images.jpg.image_url || ''" width="200" height="500" alt="anime image" class="rounded-lg shadow-lg w-full h-auto aspect-3/4 object-cover">
+    } @else {
+      <div class="w-full animate-pulse bg-zinc-800/90 rounded-md aspect-3/4"></div>
+    }
+
+    <p class="text-center mt-1">
+      {{ character.name }}
+    </p>
+  </div>
+}

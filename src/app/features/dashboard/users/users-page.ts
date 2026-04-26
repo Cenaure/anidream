@@ -27,8 +27,7 @@ import {UsersService} from './services/users.service';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {GroupToStringPipe} from './pipes/group-to-string-pipe';
 import {PermissionsPipe} from './pipes/permissions-pipe';
-import {DomSanitizer} from '@angular/platform-browser';
-import {Alert} from '../../../shared/components/alert/alert';
+import {AlertComponent} from '../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
 import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
 import {dashboardCreateUserRoute, dashboardEditUserRoute} from '../../../shared/utils/paths';
@@ -45,7 +44,7 @@ import {dashboardCreateUserRoute, dashboardEditUserRoute} from '../../../shared/
     HlmInputImports,
     BrnSelectImports,
     HlmTableImports,
-    Alert,
+    AlertComponent,
     RouterLink,
     LucideAngularModule,
   ],

@@ -1,0 +1,193 @@
+
+@if (anime(); as data) {
+<section class="py-20 space-y-8">
+  <!--Titles-->
+  <div>
+    @if (data && data.titles) {
+      <h1 class="text-4xl font-bold">
+        @if (data.titles[0]) {
+          {{data.titles[0].title}}
+        }
+      </h1>
+      <div class="flex flex-wrap gap-2.5 text-muted-foreground">
+        @for (titleEntry of data.titles.slice(1); track titleEntry.title; let isLast = $last) {
+          <p [class.anime-title]="titleEntry.type === 'Japanese'">
+            {{ titleEntry.title }}@if (!isLast) {,}
+          </p>
+        }
+      </div>
+    } @else {
+      <div class="max-w-md h-12 animate-pulse bg-zinc-800/90 rounded-md"></div>
+    }
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!--Left Sidebar: Image and Stats-->
+    <div class="w-full lg:w-72 space-y-6">
+      <!--Image-->
+      @if (data && data.images) {
+        @if (data.images.webp && data.images.webp.large_image_url) {
+          <img [ngSrc]="data.images.webp.large_image_url || ''" width="400" height="500" alt="anime image" class="rounded-lg shadow-lg w-full h-auto aspect-3/4 object-cover">
+        } @else if (data.images.jpg && data.images.jpg.large_image_url) {
+          <img [ngSrc]="data.images.jpg.large_image_url || ''" width="400" height="500" alt="anime image" class="rounded-lg shadow-lg w-full h-auto aspect-3/4 object-cover">
+        } @else {
+          <div class="w-full animate-pulse bg-zinc-800/90 rounded-md aspect-3/4"></div>
+        }
+      }
+
+      <!--Quick Stats-->
+      <div class="bg-zinc-800/80 border border-zinc-700 rounded-xl p-6 shadow-sm text-[0.9rem] space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 flex items-center gap-2">
+            <ng-icon name="phosphorStar" class="text-yellow-500" /> Score
+          </span>
+          <span class="text-zinc-200 font-medium">{{ (data.score | number:'1.1-1') || 'N/A' }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 flex items-center gap-2">
+            <ng-icon name="phosphorUsers" class="text-blue-500" /> Scored By
+          </span>
+          <span class="text-zinc-200 font-medium">{{ data.scored_by | number }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 flex items-center gap-2">
+            <ng-icon name="phosphorHash" class="text-purple-500" /> Rank
+          </span>
+          <span class="text-zinc-200 font-medium">#{{ data.rank || 'N/A' }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 flex items-center gap-2">
+            <ng-icon name="phosphorTrophy" class="text-orange-500" /> Popularity
+          </span>
+          <span class="text-zinc-200 font-medium">#{{ data.popularity || 'N/A' }}</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-500 flex items-center gap-2">
+            <ng-icon name="phosphorMonitorPlay" class="text-green-500" /> Episodes
+          </span>
+          <span class="text-zinc-200 font-medium">{{ data.episodes || 'Unknown' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!--Right Side: Details-->
+    <div class="flex-1 space-y-4">
+      <!--Badges-->
+      <div class="flex flex-wrap gap-2">
+        @if (data.year) {
+          <span class="px-3 py-1 rounded-full text-xs font-medium text-zinc-300 bg-zinc-800 border border-zinc-700">{{data.year}}</span>
+        }
+        @if (data.type) {
+          <span class="px-3 py-1 rounded-full text-xs font-medium text-zinc-300 bg-zinc-800 border border-zinc-700">{{data.type}}</span>
+        }
+        <span class="px-3 py-1 rounded-full text-xs font-medium text-zinc-300 bg-zinc-800 border border-zinc-700">
+          {{ data.airing ? 'Airing' : 'Finished' }}
+        </span>
+        @if (data.rating) {
+          <span class="px-3 py-1 rounded-full text-xs font-medium text-zinc-300 bg-zinc-800 border border-zinc-700">{{data.rating}}</span>
+        }
+      </div>
+
+      <!--Synopsis-->
+      <div class="bg-zinc-800/80 border border-zinc-700 rounded-xl p-6 shadow-sm">
+        <h3 class="uppercase text-xs font-semibold tracking-wider text-zinc-500 mb-4">
+          Synopsis
+        </h3>
+        @if (data.synopsis) {
+          <p class="text-zinc-200 text-base leading-relaxed font-light whitespace-pre-line">
+            {{ data.synopsis }}
+          </p>
+        } @else {
+          <div class="space-y-2 animate-pulse">
+            <div class="h-4 bg-zinc-700/50 rounded w-full"></div>
+            <div class="h-4 bg-zinc-700/50 rounded w-11/12"></div>
+            <div class="h-4 bg-zinc-700/50 rounded w-4/5"></div>
+          </div>
+        }
+      </div>
+
+      <!--Background Info-->
+      @if (data.background) {
+        <div class="bg-zinc-800/80 border border-zinc-700 rounded-xl p-6 shadow-sm">
+          <h3 class="uppercase text-xs font-semibold tracking-wider text-zinc-500 mb-4">
+            Background
+          </h3>
+          <p class="text-zinc-400 text-sm leading-relaxed font-light italic">
+            {{ data.background }}
+          </p>
+        </div>
+      }
+
+      <!--Genres, Studios, Producers-->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        @if (data.genres && data.genres.length > 0) {
+          <div>
+            <h4 class="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-2">Genres</h4>
+            <div class="flex flex-wrap gap-1.5">
+              @for (genre of data.genres; track genre.mal_id) {
+                <span class="text-zinc-300 text-xs bg-zinc-700/30 px-2 py-0.5 rounded">{{ genre.name }}</span>
+              }
+            </div>
+          </div>
+        }
+        @if (data.studios && data.studios.length > 0) {
+          <div>
+            <h4 class="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-2">Studios</h4>
+            <div class="flex flex-wrap gap-1.5">
+              @for (studio of data.studios; track studio.mal_id) {
+                <span class="text-zinc-300 text-xs bg-zinc-700/30 px-2 py-0.5 rounded">{{ studio.name }}</span>
+              }
+            </div>
+          </div>
+        }
+        @if (data.producers && data.producers.length > 0) {
+          <div>
+            <h4 class="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-2">Producers</h4>
+            <div class="flex flex-wrap gap-1.5">
+              @for (producer of data.producers; track producer.mal_id) {
+                <span class="text-zinc-300 text-xs bg-zinc-700/30 px-2 py-0.5 rounded">{{ producer.name }}</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col lg:flex-row gap-8">
+    <div class="w-full lg:w-72">
+      @if (data.url) {
+        <div class="bg-zinc-800/80 border border-zinc-700 rounded-xl p-6">
+          <a [href]="data.url" target="_blank" class="flex items-center justify-center gap-2 text-zinc-200 hover:text-zinc-100 underline underline-offset-4 font-medium transition-colors">
+            MyAnimeList Page
+            <ng-icon name="phosphorArrowSquareOut" />
+          </a>
+        </div>
+      }
+    </div>
+
+    <div class="flex-1">
+      @if (safeTrailerUrl(); as url) {
+        <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-2xl">
+          <iframe [src]="url" class="absolute top-0 left-0 w-full h-full border-0" allowfullscreen></iframe>
+        </div>
+      }@else {
+        <div class="aspect-video bg-zinc-900 border border-zinc-800 rounded-xl flex flex-col items-center justify-center text-zinc-600 gap-3">
+          <ng-icon name="phosphorMonitorPlay" class="text-4xl" />
+          <p>Trailer not available</p>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!--Characters-->
+  <div>
+    <h3 class="text-2xl font-bold mb-4">Characters</h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-6">
+      @for (character of characters(); track $index) {
+        <app-anime-character-card [character]="character" />
+      }
+    </div>
+  </div>
+</section>
+}
