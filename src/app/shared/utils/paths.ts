@@ -30,6 +30,9 @@ export const topAnimeRoute = "top"
 export const randomAnime = "random"
 export const randomAnimeRoute = animeRoute + "/" + randomAnime
 
+export const searchAnime = "search"
+export const searchAnimeRoute = animeRoute + "/" + searchAnime
+
 // External
 export const cenaureRoute = "https://cenaure.xyz"
 export const jikanRoute = "https://jikan.moe"

@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, signal} from '@angular/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../core/auth/services/auth.service';
-import {signInRoute} from '../../utils/paths';
+import {searchAnimeRoute, signInRoute} from '../../utils/paths';
 import {NgOptimizedImage} from '@angular/common';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {phosphorSignIn, phosphorSignOut} from '@ng-icons/phosphor-icons/regular';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
@@ -14,6 +15,7 @@ import {phosphorSignIn, phosphorSignOut} from '@ng-icons/phosphor-icons/regular'
     RouterLink,
     NgOptimizedImage,
     NgIcon,
+    FormsModule,
   ],
   templateUrl: './navbar.component.html',
   viewProviders: [provideIcons({phosphorSignIn, phosphorSignOut})]
@@ -33,4 +35,13 @@ export class NavbarComponent implements OnInit {
   }
 
   protected readonly signInRoute = signInRoute;
+
+
+  //Search
+  query = signal('');
+
+  onSearch() {
+    if (!this.query().trim()) return;
+    this.router.navigate([searchAnimeRoute], { queryParams: { q: this.query().trim() } });
+  }
 }

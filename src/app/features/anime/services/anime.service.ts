@@ -60,6 +60,17 @@ export class AnimeService {
     );
   }
 
+  // Search Anime
+  searchAnime(q: string): Observable<AnimeListResponse> {
+    let params = new HttpParams();
+
+    if (q)    params = params.set('q', q);
+
+    return this.http.get<AnimeListResponse>(`${this.apiUrl}/anime/`, {params}).pipe(
+      catchError(error => this.errorsService.processError(error))
+    );
+  }
+
   // Fetches anime by its mal_id
   getAnimeById(id: string): Observable<AnimeByIdResponse> {
     return this.http.get<AnimeByIdResponse>(`${this.apiUrl}/anime/${id}`).pipe(
