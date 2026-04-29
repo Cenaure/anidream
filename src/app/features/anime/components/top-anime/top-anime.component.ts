@@ -3,8 +3,6 @@ import { AnimeService } from '../../services/anime.service';
 import { Anime } from '../../_schemas/anime.schema';
 import {RouterLink} from '@angular/router';
 import {AnimeCardComponent} from '../anime-card/anime-card.component';
-import {provideIcons} from '@ng-icons/core';
-import {phosphorSignIn} from '@ng-icons/phosphor-icons/regular';
 
 const LIMIT = 14;
 
@@ -20,12 +18,11 @@ export class TopAnimeComponent implements OnInit {
   animeService = inject(AnimeService);
   loadedTopAnime = signal<Anime[] | null>(null);
   isLoading = signal(true);
-  showAll = signal(false);
 
   displayed = computed(() => {
     const list = this.loadedTopAnime();
     if (!list) return [];
-    return this.showAll() ? list : list.slice(0, LIMIT);
+    return list.slice(0, LIMIT);
   });
 
   ngOnInit() {

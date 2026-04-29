@@ -20,7 +20,6 @@ import {UserSchema} from '../../../../features/dashboard/users/_schemas/user.sch
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
-import {rxResource} from '@angular/core/rxjs-interop';
 import {dashboardRoute, signInRoute} from '../../../../shared/utils/paths';
 
 @Component({
@@ -48,15 +47,14 @@ export class SignUp {
     private readonly authService: AuthService,
     private readonly router: Router,
   ) {
-    const options = {
+    zxcvbnOptions.setOptions({
       translations: zxcvbnEnPackage.translations,
       graphs: zxcvbnCommonPackage.adjacencyGraphs,
       dictionary: {
         ...zxcvbnCommonPackage.dictionary,
         ...zxcvbnEnPackage.dictionary,
       },
-    }
-    zxcvbnOptions.setOptions(options)
+    })
   }
   //endregion: ---constructor
 
@@ -114,6 +112,9 @@ export class SignUp {
 
   signUp(event: any) {
     event.preventDefault();
+
+    this.signUpForm().markAsTouched();
+    if (this.signUpForm().invalid()) return;
 
     //region: ---UserFormat
     const data = this.model()

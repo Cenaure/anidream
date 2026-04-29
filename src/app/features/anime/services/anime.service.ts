@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {catchError, Observable, retry, timer} from 'rxjs';
-import {AnimeByIdResponse, AnimeListResponse, Film, RandomAnimeResponse} from '../_schemas/anime.schema';
+import {Anime, AnimeByIdResponse, AnimeListResponse, Film, RandomAnimeResponse} from '../_schemas/anime.schema';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../../env/dev.env';
 import {ErrorService} from '../../../shared/utils/processError';
@@ -74,6 +74,12 @@ export class AnimeService {
   // Fetches anime by its mal_id
   getAnimeById(id: string): Observable<AnimeByIdResponse> {
     return this.http.get<AnimeByIdResponse>(`${this.apiUrl}/anime/${id}`).pipe(
+      catchError(error => this.errorsService.processError(error))
+    )
+  }
+
+  getAnimeByIds(ids: string): Observable<{data: Anime[]}> {
+    return this.http.get<{data: Anime[]}>(`${this.apiUrl}/anime/ids/${ids}`).pipe(
       catchError(error => this.errorsService.processError(error))
     )
   }

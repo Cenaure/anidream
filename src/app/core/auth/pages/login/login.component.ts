@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmInputImports} from '@spartan-ng/helm/input';
@@ -12,13 +12,12 @@ import {Router, RouterLink} from '@angular/router';
 import {dashboardUsersRoute, signUpRoute} from '../../../../shared/utils/paths';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-component',
   imports: [HlmButtonImports, HlmInputImports, HlmLabelImports, HlmCardImports, FormsModule, RouterLink],
-  providers: [provideIcons({lucideCheck, lucideChevronDown})],
   host: {
     class: 'contents',
   },
-  templateUrl: './login.html',
+  templateUrl: './login.component.html',
 })
 export class LoginPage {
   //region: ---constructor

@@ -1,1 +1,23 @@
-<app-top-anime />
+<section class="mt-6 mb-12 space-y-5">
+  <div class="flex items-end gap-3">
+    <h2 class="text-xl font-semibold text-mauve-200 tracking-tight uppercase">Recommended Anime</h2>
+  </div>
+
+  <app-recomended-anime />
+</section>
+
+<div class="h-1 w-full rounded-xl bg-mauve-900/40"></div>
+
+<section class="my-6 space-y-5">
+  <div class="flex items-end justify-between">
+    <div class="flex items-end gap-3">
+      <h2 class="text-xl font-semibold text-mauve-200 tracking-tight uppercase">Best releases</h2>
+    </div>
+    <button
+      class="text-sm text-violet-400 hover:text-violet-300 transition-colors duration-200 cursor-pointer">
+      view all ->
+    </button>
+  </div>
+
+  <app-top-anime />
+</section>

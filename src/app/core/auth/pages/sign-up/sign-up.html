@@ -12,7 +12,7 @@
             <label hlmLabel for="username">Username</label>
             <input type="text" [formField]="signUpForm.username" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.username().invalid()) {
+              @if (signUpForm.username().invalid() && signUpForm.username().touched()) {
                 {{signUpForm.username().errors()[0].message}}
               }
             </p>
@@ -22,7 +22,7 @@
             <label hlmLabel for="email">Email</label>
             <input type="email" [formField]="signUpForm.email"  hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.email().invalid()) {
+              @if (signUpForm.email().invalid() && signUpForm.email().touched()) {
                 {{signUpForm.email().errors()[0].message}}
               }
             </p>
@@ -34,7 +34,7 @@
             </div>
             <input type="password" [formField]="signUpForm.password" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.password().invalid()) {
+              @if (signUpForm.password().invalid() && signUpForm.password().touched()) {
                 {{signUpForm.password().errors()[0].message}}
               }
             </p>
@@ -46,7 +46,7 @@
             </div>
             <input type="password" [formField]="signUpForm.confirmPassword" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (signUpForm.confirmPassword().invalid()) {
+              @if (signUpForm.confirmPassword().invalid() && signUpForm.confirmPassword().touched()) {
                 {{signUpForm.confirmPassword().errors()[0].message}}
               }
             </p>

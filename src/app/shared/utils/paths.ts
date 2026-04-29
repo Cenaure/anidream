@@ -1,14 +1,14 @@
 // Protected
 export const dashboardRoute = "dashboard"
 
-export const dashboardUsersRoute = dashboardRoute + "users"
+export const dashboardUsersRoute = "/" + dashboardRoute + "/users"
 export const dashboardEditUserRoute = (userId: string | number) => dashboardUsersRoute + "/user-edit/" + userId;
-export const dashboardCreateUserRoute = dashboardUsersRoute + "user-new"
+export const dashboardCreateUserRoute =  "/" + dashboardUsersRoute + "user-new"
 
-export const dashboardGroupsRoute = dashboardRoute + "groups"
-export const dashboardNewGroupRoute = dashboardGroupsRoute + "new"
-export const dashboardEditGroupRoute = (id: string) => dashboardGroupsRoute + `edit/${id}`
-export const dashboardListGroupsRoute = dashboardGroupsRoute + "list"
+export const dashboardGroupsRoute =  "/" + dashboardRoute + "groups"
+export const dashboardNewGroupRoute = dashboardGroupsRoute + "/new"
+export const dashboardEditGroupRoute = (id: string) => dashboardGroupsRoute + `/edit/${id}`
+export const dashboardListGroupsRoute =  "/" + dashboardGroupsRoute + "/list"
 
 export const dashboardAnimeRoute = dashboardRoute + "anime"
 
@@ -16,8 +16,8 @@ export const dashboardAnimeRoute = dashboardRoute + "anime"
 export const authRoute = "auth"
 export const signIn = "sign-in"
 export const signUp = "sign-up"
-export const signUpRoute = authRoute + "/" + signUp
-export const signInRoute = authRoute + "/" + signIn
+export const signUpRoute = "/" + authRoute + "/" + signUp
+export const signInRoute = "/" + authRoute + "/" + signIn
 
 // Account
 export const profileRoute = "profile"

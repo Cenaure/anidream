@@ -1,11 +1,12 @@
 import {Component, Input} from '@angular/core';
 import {Anime} from '../../_schemas/anime.schema';
-import {NgOptimizedImage} from '@angular/common';
+import {DecimalPipe, NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-anime-card',
   imports: [
     NgOptimizedImage,
+    DecimalPipe,
   ],
   templateUrl: './anime-card.component.html',
 })
