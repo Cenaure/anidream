@@ -12,7 +12,7 @@ export class UserSchema {
       id,
       last_login,
       u.password ?? '',
-      u.groups?.map((g: any) => Group.clone(g)) ?? []
+      u.groups ?? ''
     );
   }
 
@@ -23,7 +23,7 @@ export class UserSchema {
     public last_login?: Date,
     public password = '',
     // public active = true,
-    public groups: Group[] = []
+    public groups: string[] = []
   ){}
 
   toString() {

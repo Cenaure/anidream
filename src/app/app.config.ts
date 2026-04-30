@@ -2,9 +2,10 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/
 import {provideRouter, withComponentInputBinding, withInMemoryScrolling} from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+import {EVENT_MANAGER_PLUGINS, provideClientHydration, withEventReplay} from '@angular/platform-browser';
 import {provideHttpClient, withInterceptors} from '@angular/common/http';
 import {apiInterceptor} from './core/http/api.interceptor';
+import {PreventDefaultEventPlugin} from './shared/utils/prevent-default-events';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +15,10 @@ export const appConfig: ApplicationConfig = {
     }), withComponentInputBinding()),
     provideClientHydration(withEventReplay()),
     provideHttpClient(withInterceptors([apiInterceptor])),
+    {
+      provide: EVENT_MANAGER_PLUGINS,
+      multi: true,
+      useClass: PreventDefaultEventPlugin
+    }
   ]
 };

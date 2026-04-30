@@ -4,9 +4,10 @@ import {Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {NgOptimizedImage} from '@angular/common';
 import {NgIcon, provideIcons} from '@ng-icons/core';
-import {phosphorSignIn, phosphorSignOut} from '@ng-icons/phosphor-icons/regular';
+import {phosphorSignIn, phosphorUserCheck} from '@ng-icons/phosphor-icons/regular';
 import {FormsModule} from '@angular/forms';
 import {Route} from '../../utils/paths';
+import {form, FormField} from '@angular/forms/signals';
 
 @Component({
   selector: 'app-navbar',
@@ -16,18 +17,14 @@ import {Route} from '../../utils/paths';
     NgOptimizedImage,
     NgIcon,
     FormsModule,
+    FormField,
   ],
   templateUrl: './navbar.component.html',
-  viewProviders: [provideIcons({phosphorSignIn, phosphorSignOut})]
+  viewProviders: [provideIcons({phosphorSignIn, phosphorUserCheck})]
 })
-export class NavbarComponent implements OnInit {
+export class NavbarComponent {
   constructor(readonly authService: AuthService, private readonly router: Router) {}
   protected readonly signInRoute = Route.signIn;
-
-  ngOnInit() {
-    console.log(this.authService.isLoggedIn())
-    console.log(this.authService.loggedUser())
-  }
 
   logout() {
     this.authService.logout().subscribe(() =>
@@ -35,12 +32,17 @@ export class NavbarComponent implements OnInit {
     );
   }
 
+  // Search
+  searchModel = signal<{q: string}>({
+    q: ""
+  })
 
-  //Search
-  query = signal('');
+  searchForm = form(this.searchModel)
 
   onSearch() {
-    if (!this.query().trim()) return;
-    this.router.navigate([Route.searchAnime()], { queryParams: { q: this.query().trim() } });
+    if (!this.searchModel().q.trim()) return;
+    this.router.navigate([Route.searchAnime()], { queryParams: { q: this.searchModel().q } });
   }
+
+  protected readonly profileRoute = Route.profile;
 }

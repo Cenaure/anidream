@@ -5,6 +5,8 @@ import {MessageService} from '../../../shared/services/message.service';
 import {ErrorService} from '../../../shared/utils/processError';
 import {isPlatformBrowser} from '@angular/common';
 import {environment} from '../../../../env/dev.env';
+import {UserSession} from '../_schemas/session.schema';
+import {Group} from '../../../features/dashboard/users/_schemas/user.schema';
 
 //region: ---DTOs
 export interface SignInDTO {
@@ -22,8 +24,8 @@ export interface UserDTO {
   id?: string;
   username: string;
   email: string;
-  groups: string[];
-  last_login?: string;
+  groups: Group[];
+  last_login?: Date;
 }
 //endregion: ---DTOs
 
@@ -44,17 +46,28 @@ export class AuthService {
 
   //region: ---Session Management
   // Only needed to have isLoggedIn, session is stored at http-only cookie
-  private readonly _loggedUser = signal<string | null>(
-    this.isBrowser ? localStorage.getItem('loggedUser') : null
+  private readonly _loggedUser = signal<UserSession | null>(
+    this.isBrowser ? this.loadSessionFromStorage() : null
   );
 
-  private setLoggedUser(name: string | null) {
+  private loadSessionFromStorage(): UserSession | null {
+    const raw = localStorage.getItem('loggedUser');
+    if (!raw) return null;
+    try {
+      return JSON.parse(raw) as UserSession;
+    } catch {
+      localStorage.removeItem('loggedUser');
+      return null;
+    }
+  }
+
+  private setLoggedUser(user: UserSession | null) {
     if (this.isBrowser) {
-      name
-        ? localStorage.setItem('loggedUser', name)
+      user
+        ? localStorage.setItem('loggedUser', JSON.stringify(user))
         : localStorage.removeItem('loggedUser');
     }
-    this._loggedUser.set(name);
+    this._loggedUser.set(user);
   }
 
   readonly loggedUser = this._loggedUser.asReadonly();
@@ -63,14 +76,14 @@ export class AuthService {
 
   //region: ---Auth
   signIn(dto: SignInDTO): Observable<boolean> {
-    return this.http.post<void>(
+    return this.http.post<UserSession>(
       `${this.apiUrl}/auth/sign-in`,
       dto,
       { withCredentials: true }
     ).pipe(
-      tap(() => {
-        this.setLoggedUser(dto.username_or_email);
-        this.messageService.success(`Welcome back, ${dto.username_or_email}`);
+      tap(user => {
+        this.setLoggedUser(user);
+        this.messageService.success(`Welcome back, ${user.username}`);
       }),
       map(() => true),
       catchError(error => {
@@ -89,7 +102,7 @@ export class AuthService {
       { withCredentials: true }
     ).pipe(
       tap(user => {
-        this.setLoggedUser(user.username);
+        this.setLoggedUser(user);
         this.messageService.success(`Welcome, ${user.username}!`);
       }),
       catchError(error => this.errorService.processError(error))

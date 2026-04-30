@@ -1,10 +1,11 @@
 import { Routes } from '@angular/router';
 import {Route, Segment} from './shared/utils/paths';
+import {HomeComponent} from './core/pages/home/home.component';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import("./core/pages/home/home.component").then(c => c.HomeComponent),
+    component: HomeComponent
   },
   {
     path: Segment.anime,
@@ -16,7 +17,7 @@ export const routes: Routes = [
   },
   {
     path: Segment.profile,
-    loadChildren: () => import("./features/account/account.router").then(r => r.ACCOUNT_ROUTES)
+    loadChildren: () => import("./features/profile/profile.router").then(r => r.ACCOUNT_ROUTES)
   },
   {
     path: Segment.dashboard,

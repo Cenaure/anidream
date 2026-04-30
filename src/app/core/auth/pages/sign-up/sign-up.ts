@@ -109,9 +109,7 @@ export class SignUp {
   // Server Error
   errorMessage = signal('')
 
-  signUp(event: any) {
-    event.preventDefault();
-
+  signUp() {
     this.signUpForm().markAsTouched();
     if (this.signUpForm().invalid()) return;
 

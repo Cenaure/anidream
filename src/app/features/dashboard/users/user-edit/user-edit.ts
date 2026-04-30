@@ -81,7 +81,7 @@ export class UserEdit implements OnInit {
         this.groupsFromServer.set(groups);
         const userGroups = this.inputUser()?.groups ?? [];
         this.selectedGroups.set(
-          groups.filter(g => userGroups.some(ug => ug.id === g.id))
+          groups.filter(g => userGroups.some(ug => ug === g.id))
         );
       }),
       takeUntilDestroyed(this.destroyRef) // ← фиксим утечку
@@ -128,7 +128,7 @@ export class UserEdit implements OnInit {
       undefined,
       data.password,
       // data.isActive,
-      this.selectedGroups()
+      this.selectedGroups().map(g => g.id || '')
     );
 
     this.usersService.saveUser(user).pipe(

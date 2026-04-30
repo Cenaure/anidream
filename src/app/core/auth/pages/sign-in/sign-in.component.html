@@ -6,21 +6,16 @@
     </div>
 
     <div hlmCardContent>
-      <form id="login-form" (submit)="onSubmit($event)">
+      <form id="login-form" (submit.prevent)="onSubmit($event)">
         <div class="flex flex-col gap-6">
           <div class="grid gap-2">
             <label hlmLabel for="name">Username or Email</label>
             <input type="text" hlmInput [formField]="signInForm.username_or_email"/>
-            @if (nameField.invalid && nameField.touched) {
-              <p class="text-sm text-red-500">
-                @if (nameField.errors?.['required']) {
-                  Field is required
-                }
-                @if (nameField.errors?.['minlength']) {
-                  Minimum 5 letters
-                }
-              </p>
-            }
+            <p class="text-red-500 mt-1">
+              @if (signInForm.username_or_email().invalid() && signInForm.username_or_email().touched()) {
+                {{signInForm.username_or_email().errors()[0].message}}
+              }
+            </p>
           </div>
 
           <div class="grid gap-2">
@@ -28,6 +23,11 @@
               <label hlmLabel for="password">Password</label>
             </div>
             <input type="password" hlmInput [formField]="signInForm.password"/>
+            <p class="text-red-500 mt-1">
+              @if (signInForm.password().invalid() && signInForm.password().touched()) {
+                {{signInForm.password().errors()[0].message}}
+              }
+            </p>
           </div>
         </div>
       </form>
@@ -40,7 +40,7 @@
     </div>
 
     <div hlmCardFooter class="flex-col gap-2">
-      <button type="submit" form="login-form" hlmBtn class="w-full cursor-pointer" [disabled]="formModel.invalid">Login</button>
+      <button type="submit" form="login-form" hlmBtn class="w-full cursor-pointer" [disabled]="signInForm().invalid()">Login</button>
       <button [routerLink]="signUpRoute" hlmBtn variant="link" class="underline text-violet-400 cursor-pointer">Sign Up</button>
     </div>
   </section>

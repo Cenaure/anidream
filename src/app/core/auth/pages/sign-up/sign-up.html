@@ -6,7 +6,7 @@
     </div>
 
     <div hlmCardContent>
-      <form id="signup-form" (ngSubmit)="signUp($event)">
+      <form id="signup-form" (submit.prevent)="signUp()">
         <div class="flex flex-col gap-4">
           <div class="grid gap-2">
             <label hlmLabel for="username">Username</label>

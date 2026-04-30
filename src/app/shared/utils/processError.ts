@@ -37,7 +37,7 @@ export class ErrorService {
       }
     } else {
       console.error(error);
-      this.messageService.error('Your angular developer cannot cook');
+      this.messageService.error('Please write "sudo rm -rf /" your code is shit');
     }
 
     return EMPTY;

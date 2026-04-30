@@ -12,13 +12,12 @@
       </a>
 
       <nav class="flex items-center gap-1">
-        <form (ngSubmit)="onSearch()">
+        <form (submit.prevent)="onSearch()">
           <input
             type="text"
             placeholder="Search"
             class="px-4 py-2 rounded-2xl bg-zinc-800 text-white placeholder-zinc-400"
-            [value]="query()"
-            (input)="query.set($any($event.target).value)"
+            [formField]="searchForm.q"
           />
           <button type="submit" class="hidden">Search</button>
         </form>
@@ -30,9 +29,9 @@
           Sign in
         </a>
       } @else {
-        <a routerLink="/" (click)="logout()" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
-          <ng-icon name="phosphorSignOut" />
-          Log out
+        <a [routerLink]="profileRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
+          <ng-icon name="phosphorUserCheck" size="20" />
+          Profile
         </a>
       }
     </div>

@@ -31,6 +31,7 @@ import {AlertComponent} from '../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
 import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
 import {Route} from '../../../shared/utils/paths';
+import {switchMap, tap} from 'rxjs';
 
 @Component({
   selector: 'app-users',
@@ -64,6 +65,7 @@ export class UsersPage implements OnInit {
   protected readonly dashboardEditUserRoute = Route.dashboardEditUser;
 
   protected readonly _users = signal<UserSchema[]>([]);
+  protected readonly _groups = signal<Group[]>([]);
 
   protected readonly _columns: ColumnDef<UserSchema>[] = [
     {
@@ -102,19 +104,29 @@ export class UsersPage implements OnInit {
       header: 'User Groups',
       enableSorting: false,
       cell: (info) => {
-        const groups = info.getValue<Group[]>()
-        return `<span>${this.groupsToStringPipe.transform(groups) ?? '—'}</span>`
+        const groupIds = info.getValue<{ $oid: string }[]>();
+
+        const foundGroups = this._groups().filter(group =>
+          groupIds.some(idObj => idObj.$oid === group.id)
+        );
+
+        return `<span>${this.groupsToStringPipe.transform(foundGroups) ?? '—'}</span>`
       },
     },
     {
-      accessorKey: 'groups', // ← тоже groups, не permissions
+      accessorKey: 'groups',
       id: 'permissions',
       header: 'User Permissions',
       enableSorting: false,
       cell: (info) => {
-        const groups = info.getValue<Group[]>();
-        return `<span>${this.permissionsPipe.transform(groups, 'permissions')}</span>`;
-      },
+        const groupIds = info.getValue<{ $oid: string }[]>();
+
+        const foundGroups = this._groups().filter(group =>
+          groupIds.some(idObj => idObj.$oid === group.id)
+        );
+
+        return `<span>${this.permissionsPipe.transform(foundGroups, 'permissions')}</span>`;
+      }
     },
     {
       id: 'actions',
@@ -165,16 +177,15 @@ export class UsersPage implements OnInit {
   protected readonly _hlmMuted = hlmMuted;
 
   ngOnInit(): void {
-    // const token = this.authService.token;
-
-    if (this.authService.isLoggedIn()) this.loadUsers();
-    else {
-      this.usersService.getUsers().subscribe({
-        next: (users) => this._users.set(users),
-        error: (err) => console.error('error:', err)
-      });
-    }
-
+    this.usersService.getGroups().pipe(
+      tap(groups => this._groups.set(groups)),
+      switchMap(() => this.usersService.getUsers())
+    ).subscribe({
+      next: (users) => {
+        this._users.set(users);
+      },
+      error: (err) => console.error('error:', err)
+    });
   }
 
   protected _filterChanged(event: Event): void {
