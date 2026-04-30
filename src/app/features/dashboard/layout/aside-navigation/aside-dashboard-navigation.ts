@@ -1,27 +1,28 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { LucideAngularModule, LucideIconData, UsersIcon, LayersIcon } from 'lucide-angular';
 import {Route} from '../../../../shared/utils/paths';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {phosphorFilmSlate, phosphorStack, phosphorUsers} from '@ng-icons/phosphor-icons/regular';
 
 interface NavItem {
   label: string;
   route: string;
-  icon: LucideIconData;
+  icon: string;
 }
 
 @Component({
   selector: 'app-aside-dashboard-navigation',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive, LucideAngularModule],
+  imports: [RouterLink, RouterLinkActive, NgIcon],
+  providers: [provideIcons({phosphorUsers, phosphorStack, phosphorFilmSlate})],
   templateUrl: './aside-dashboard-navigation.html',
 })
 export class AsideNavigationComponent {
   usersNav = signal<NavItem[]>([
-    { label: 'All Users', route: Route.dashboardUsers,  icon: UsersIcon },
-    { label: 'Groups',    route: Route.dashboardListGroups, icon: LayersIcon },
+    { label: 'All Users', route: Route.dashboardUsers,  icon: 'phosphorUsers' },
+    { label: 'Groups',    route: Route.dashboardListGroups, icon: 'phosphorStack' },
   ]);
 
   animeNav = signal<NavItem[]>([
-    { label: 'Anime', route: Route.dashboardAnime, icon: LayersIcon },
+    { label: 'Anime', route: Route.dashboardAnime, icon: 'phosphorFilmSlate' },
   ])
 }

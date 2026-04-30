@@ -5,26 +5,26 @@ import {MessageService} from '../../../shared/services/message.service';
 import {ErrorService} from '../../../shared/utils/processError';
 import {isPlatformBrowser} from '@angular/common';
 import {environment} from '../../../../env/dev.env';
-import {UserSession} from '../_schemas/session.schema';
-import {Group} from '../../../features/dashboard/users/_schemas/user.schema';
+import {IUserSession} from '../_schemas/session.schema';
+import {IGroup} from '../../../features/dashboard/users/_schemas/user.schema';
 
 //region: ---DTOs
-export interface SignInDTO {
+export interface SignInDto {
   username_or_email: string;
   password: string;
 }
 
-export interface SignUpDTO {
+export interface SignUpDto {
   username: string;
   email: string;
   password: string;
 }
 
-export interface UserDTO {
+export interface UserDto {
   id?: string;
   username: string;
   email: string;
-  groups: Group[];
+  groups: IGroup[];
   last_login?: Date;
 }
 //endregion: ---DTOs
@@ -46,22 +46,22 @@ export class AuthService {
 
   //region: ---Session Management
   // Only needed to have isLoggedIn, session is stored at http-only cookie
-  private readonly _loggedUser = signal<UserSession | null>(
+  private readonly _loggedUser = signal<IUserSession | null>(
     this.isBrowser ? this.loadSessionFromStorage() : null
   );
 
-  private loadSessionFromStorage(): UserSession | null {
+  private loadSessionFromStorage(): IUserSession | null {
     const raw = localStorage.getItem('loggedUser');
     if (!raw) return null;
     try {
-      return JSON.parse(raw) as UserSession;
+      return JSON.parse(raw) as IUserSession;
     } catch {
       localStorage.removeItem('loggedUser');
       return null;
     }
   }
 
-  private setLoggedUser(user: UserSession | null) {
+  setLoggedUser(user: IUserSession | null) {
     if (this.isBrowser) {
       user
         ? localStorage.setItem('loggedUser', JSON.stringify(user))
@@ -75,8 +75,8 @@ export class AuthService {
   //endregion: ---Session Management
 
   //region: ---Auth
-  signIn(dto: SignInDTO): Observable<boolean> {
-    return this.http.post<UserSession>(
+  signIn(dto: SignInDto): Observable<boolean> {
+    return this.http.post<IUserSession>(
       `${this.apiUrl}/auth/sign-in`,
       dto,
       { withCredentials: true }
@@ -95,8 +95,8 @@ export class AuthService {
     );
   }
 
-  signUp(dto: SignUpDTO): Observable<UserDTO> {
-    return this.http.post<UserDTO>(
+  signUp(dto: SignUpDto): Observable<UserDto> {
+    return this.http.post<UserDto>(
       `${this.apiUrl}/auth/sign-up`,
       dto,
       { withCredentials: true }

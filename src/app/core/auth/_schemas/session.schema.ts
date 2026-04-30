@@ -1,8 +1,8 @@
-import {Group} from '../../../features/dashboard/users/_schemas/user.schema';
+import {IGroup} from '../../../features/dashboard/users/_schemas/user.schema';
 
-export interface UserSession {
+export interface IUserSession {
   username: string,
   email: string,
-  groups: Group[],
+  groups: IGroup[],
   last_login?: Date,
 }

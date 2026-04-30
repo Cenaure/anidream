@@ -11,12 +11,9 @@ import {
 } from '@spartan-ng/helm/card';
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
-import {provideIcons} from '@ng-icons/core';
-import {lucideCheck, lucideChevronDown} from '@ng-icons/lucide';
 import {Router, RouterLink} from '@angular/router';
-import {AuthService} from '../../services/auth.service';
-import {email, form, FormField, minLength, pattern, required, validate, validateAsync} from '@angular/forms/signals';
-import {UserSchema} from '../../../../features/dashboard/users/_schemas/user.schema';
+import {AuthService, SignUpDto} from '../../services/auth.service';
+import {email, form, FormField, minLength, required, validate} from '@angular/forms/signals';
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
@@ -60,7 +57,7 @@ export class SignUp {
   //region: ---formDeclaration
   // aka react hook forms
   // but without zod validation :(
-  model = signal({
+  model = signal<SignUpDto & {confirmPassword: string}>({
     username: '', // Name
     email: '',
     password: '',
@@ -113,13 +110,10 @@ export class SignUp {
     this.signUpForm().markAsTouched();
     if (this.signUpForm().invalid()) return;
 
-    //region: ---UserFormat
     const data = this.model()
-    const user = new UserSchema(data.username, data.email, undefined, undefined, data.password)
-    //endregion: ---UserFormat
 
     // AuthService Sign-Up
-    this.authService.signUp(user).subscribe(savedUser => {
+    this.authService.signUp(data).subscribe(savedUser => {
       this.router.navigateByUrl(Route.dashboardUsers);
     })
   }

@@ -1,7 +1,7 @@
 import {Person} from './character.schema';
 import {Postava} from './producer.schema';
 import {CommonMalResponse} from './common.shcema';
-import {Pagination} from './pagination.schema';
+import {Pagination} from '../../../shared/services/_schema/pagination.schema';
 import {Images} from './image.schema';
 
 // TODO remove below

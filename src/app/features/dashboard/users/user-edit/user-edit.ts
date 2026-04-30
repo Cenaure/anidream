@@ -13,7 +13,7 @@ import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
 import {zxcvbnOptions} from '@zxcvbn-ts/core';
 import {email, form, FormField, minLength, required} from '@angular/forms/signals';
-import {Group, UserSchema} from '../_schemas/user.schema';
+import {IGroup, IUser, mapUser} from '../_schemas/user.schema';
 import {UsersService} from '../services/users.service';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
 import {DestroyRef, inject} from '@angular/core';
@@ -51,21 +51,21 @@ export class UserEdit implements OnInit {
   }
 
   readonly userId = signal<string | null>(null); // string — MongoDB ObjectId
-  readonly inputUser = signal<UserSchema | null>(null);
+  readonly inputUser = signal<IUser | null>(null);
   //endregion: ---constructor
 
   //region: ---ngOnInit
-  groupsFromServer = signal<Group[]>([]);
+  groupsFromServer = signal<IGroup[]>([]);
   errorMessage = signal('');
 
   ngOnInit() {
     this.route.paramMap.pipe(
-      map(params => params.get('id')), // string | null, без Number()
+      map(params => params.get('id')),
       tap(userId => this.userId.set(userId)),
       switchMap(userId =>
         userId
           ? this.usersService.getUser(userId)
-          : of(new UserSchema('', ''))
+          : of(mapUser({username: '', password: '', id: ''}))
       ),
       tap(user => {
         this.inputUser.set(user);
@@ -84,7 +84,7 @@ export class UserEdit implements OnInit {
           groups.filter(g => userGroups.some(ug => ug === g.id))
         );
       }),
-      takeUntilDestroyed(this.destroyRef) // ← фиксим утечку
+      takeUntilDestroyed(this.destroyRef)
     ).subscribe();
   }
   //endregion: ---ngOnInit
@@ -106,34 +106,29 @@ export class UserEdit implements OnInit {
   //endregion: ---Form
 
   //region: ---Groups
-  selectedGroups = signal<Group[]>([]);
+  selectedGroups = signal<IGroup[]>([]);
 
-  toggleGroup(group: Group, checked: boolean) {
+  toggleGroup(group: IGroup, checked: boolean) {
     this.selectedGroups.update(groups =>
       checked ? [...groups, group] : groups.filter(g => g.id !== group.id)
     );
   }
   //endregion: ---Groups
 
-  save(event: Event) {
-    event.preventDefault();
-
+  save() {
     if (this.userEditForm().invalid()) return;
 
     const data = this.model();
-    const user = new UserSchema(
-      data.username,
-      data.email,
-      this.userId() ?? undefined,
-      undefined,
-      data.password,
-      // data.isActive,
-      this.selectedGroups().map(g => g.id || '')
-    );
+    const user = {
+      username: data.username,
+      email: data.email,
+      id: this.userId() ?? undefined,
+      last_login: undefined,
+      password: data.password, // active deleted
+      groups: this.selectedGroups().map(g => g.id || '')
+    } as IUser;
 
-    this.usersService.saveUser(user).pipe(
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe({
+    this.usersService.saveUser(user).subscribe({
       next: () => this.router.navigateByUrl(Route.dashboardUsers),
       error: (err) => this.errorMessage.set(err.message ?? 'Something went wrong')
     });

@@ -1,8 +1,8 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {GroupEditChild} from '../group-edit-child/group-edit-child';
-import {Group} from '../../users/_schemas/user.schema';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Route} from '../../../../shared/utils/paths';
+import {IGroup} from '../../users/_schemas/user.schema';
 
 @Component({
   selector: 'app-group-edit',
@@ -19,7 +19,11 @@ export class GroupEdit implements OnInit {
   ) {}
   //endregion: ---constructor
 
-  group = signal<Group>(new Group('', []))
+  group = signal<IGroup>({
+    id: '',
+    name: '',
+    permissions: [],
+  })
 
   ngOnInit() {
     this.route.data.subscribe(data => {
@@ -27,7 +31,7 @@ export class GroupEdit implements OnInit {
     })
   }
 
-  saved(savedGroup: Group) {
+  saved(savedGroup: IGroup) {
     console.log(savedGroup)
     this.router.navigateByUrl(Route.dashboardListGroups)
   }

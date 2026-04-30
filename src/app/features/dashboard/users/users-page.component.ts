@@ -22,7 +22,7 @@ import {
   type SortingState,
   type VisibilityState,
 } from '@tanstack/angular-table';
-import {Group, UserSchema} from './_schemas/user.schema';
+import {IGroup, IUser} from './_schemas/user.schema';
 import {UsersService} from './services/users.service';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {GroupToStringPipe} from './pipes/group-to-string-pipe';
@@ -51,10 +51,10 @@ import {switchMap, tap} from 'rxjs';
   ],
   providers: [provideIcons({lucideChevronDown}), GroupToStringPipe, PermissionsPipe],
   host: {class: 'w-full'},
-  templateUrl: './users-page.html',
+  templateUrl: './users-page.component.html',
   standalone: true
 })
-export class UsersPage implements OnInit {
+export class UsersPageComponent implements OnInit {
   readonly squarePenIcon = SquarePenIcon
   private readonly groupsToStringPipe = inject(GroupToStringPipe)
   private readonly usersService = inject(UsersService);
@@ -64,10 +64,10 @@ export class UsersPage implements OnInit {
 
   protected readonly dashboardEditUserRoute = Route.dashboardEditUser;
 
-  protected readonly _users = signal<UserSchema[]>([]);
-  protected readonly _groups = signal<Group[]>([]);
+  protected readonly _users = signal<IUser[]>([]);
+  protected readonly _groups = signal<IGroup[]>([]);
 
-  protected readonly _columns: ColumnDef<UserSchema>[] = [
+  protected readonly _columns: ColumnDef<IUser>[] = [
     {
       accessorKey: 'id',
       id: 'id',
@@ -142,7 +142,7 @@ export class UsersPage implements OnInit {
     lastLogin: this.authService.isLoggedIn()
   });
 
-  protected readonly _table = createAngularTable<UserSchema>(() => ({
+  protected readonly _table = createAngularTable<IUser>(() => ({
     data: this._users(),
     columns: this._columns,
     enableSorting: true,
@@ -181,8 +181,8 @@ export class UsersPage implements OnInit {
       tap(groups => this._groups.set(groups)),
       switchMap(() => this.usersService.getUsers())
     ).subscribe({
-      next: (users) => {
-        this._users.set(users);
+      next: (res) => {
+        this._users.set(res.data);
       },
       error: (err) => console.error('error:', err)
     });
@@ -195,14 +195,14 @@ export class UsersPage implements OnInit {
 
   private loadUsers() {
     this.usersService.getUsers().subscribe({
-      next: (users) => {
-        this._users.set(users)
+      next: (res) => {
+        this._users.set(res.data)
       },
       error: (err) => console.error('error:', err)
     })
   }
 
-  protected deleteUser(user: UserSchema): void {
+  protected deleteUser(user: IUser): void {
     console.log('delete', user);
     // const token = this.authService.token;
     this.usersService.deleteUser(user.id || "").subscribe(success => {

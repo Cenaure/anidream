@@ -7,7 +7,7 @@ export const ANIME_ROUTES: Routes = [
   {
     path: '', component: AnimeMenu,
     children: [
-      {path: Segment.list, loadComponent: () => import("./anime-list/anime-list").then(c => c.AnimeList)},
+      {path: Segment.list, loadComponent: () => import("./anime-list/anime-list.component").then(c => c.AnimeListComponent)},
       {path: '', redirectTo: Route.dashboardAnime, pathMatch: 'prefix'},
     ]
   }

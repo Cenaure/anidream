@@ -1,5 +1,6 @@
 import {Routes} from '@angular/router';
 import {authMatchGuard} from '../../core/auth/auth-guard';
+import {Segment} from '../../shared/utils/paths';
 
 export const DASHBOARD_ROUTES: Routes = [
   { // Dashboard Layout
@@ -11,30 +12,30 @@ export const DASHBOARD_ROUTES: Routes = [
     children: [
       //Users
       {
-        path: 'users',
+        path: Segment.users,
         children: [
           {
             path: "",
-            loadComponent: () => import('./users/users-page').then(c => c.UsersPage),
+            loadComponent: () => import('./users/users-page.component').then(c => c.UsersPageComponent),
           },
           // Create / Edit user
           {
-            path: "user-new",
+            path: Segment.new,
             loadComponent: () => import('./users/user-edit/user-edit').then(c => c.UserEdit),
           },
           {
-            path: "user-edit/:id",
+            path: Segment.edit + "/:id",
             loadComponent: () => import('./users/user-edit/user-edit').then(c => c.UserEdit),
           },
         ],
       },
       //Groups
       {
-        path: 'groups',
+        path: Segment.groups,
         loadChildren: () => import('./groups/groups.routes').then(r => r.GROUPS_ROUTES),
       },
       {
-        path: 'anime',
+        path: Segment.anime,
         loadChildren: () => import('./anime/anime.router').then(r => r.ANIME_ROUTES)
       }
     ]

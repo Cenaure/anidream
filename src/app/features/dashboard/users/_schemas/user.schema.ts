@@ -1,47 +1,38 @@
-export class UserSchema {
-  static clone(u: any): UserSchema {
-    const id = u._id?.$oid ?? u._id ?? u.id;
+// User Schema
+export interface IUser {
+  id: string;
+  username: string;
+  email: string;
+  last_login?: Date;
+  password?: string;
+  groups?: string[];
+}
 
-    const last_login = u.last_login?.$date
+export function mapUser(u: any): IUser {
+  return {
+    id: u._id?.$oid,
+    username: u.username,
+    email: u.email,
+    last_login: u.last_login?.$date
       ? new Date(Number(u.last_login.$date.$numberLong))
-      : u.last_login ? new Date(u.last_login) : undefined;
-
-    return new UserSchema(
-      u.username,
-      u.email,
-      id,
-      last_login,
-      u.password ?? '',
-      u.groups ?? ''
-    );
-  }
-
-  constructor(
-    public username: string,
-    public email: string,
-    public id?: string,
-    public last_login?: Date,
-    public password = '',
-    // public active = true,
-    public groups: string[] = []
-  ){}
-
-  toString() {
-    return `${this.id ?? '?'}: ${this.username}, ${this.email}`;
+      : u.last_login ? new Date(u.last_login) : undefined,
+    password: u.password ?? '',
+    groups: u.groups ?? []
   }
 }
 
-export class Group {
 
-  static clone(g: any): Group {
-    const id = g._id?.$oid ?? g._id ?? g.id;
+// Group Schema
+export interface IGroup {
+  id: string;
+  name: string;
+  permissions: string[];
+}
 
-    return new Group(g.name, [...g.permissions], id);
+export function mapGroup(g: any): IGroup {
+  return {
+    id: g._id?.$oid,
+    name: g.name,
+    permissions: g.permissions ?? []
   }
-
-  constructor(
-    public name: string,
-    public permissions: string[] = [],
-    public id?: string
-  ){}
 }

@@ -1,6 +1,5 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {UsersService} from '../../users/services/users.service';
-import {Group} from '../../users/_schemas/user.schema';
 import {
   ColumnDef,
   createAngularTable, FlexRenderDirective,
@@ -12,6 +11,7 @@ import {HlmButton} from '@spartan-ng/helm/button';
 import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
 import {Router} from '@angular/router';
 import {Route} from '../../../../shared/utils/paths';
+import {IGroup} from '../../users/_schemas/user.schema';
 
 @Component({
   selector: 'app-groups-list',
@@ -34,9 +34,9 @@ export class GroupsList implements OnInit {
     private readonly usersService: UsersService,
     private readonly router: Router,
   ) {}
-  groupsLoaded = signal<Group[]>([])
+  groupsLoaded = signal<IGroup[]>([])
 
-  protected readonly _columns: ColumnDef<Group>[] = [
+  protected readonly _columns: ColumnDef<IGroup>[] = [
     {
       accessorKey: 'id',
       id: 'id',
@@ -66,7 +66,7 @@ export class GroupsList implements OnInit {
   private readonly _rowSelection = signal<RowSelectionState>({});
   private readonly _columnVisibility = signal<VisibilityState>({});
 
-  protected readonly _table = createAngularTable<Group>(() => ({
+  protected readonly _table = createAngularTable<IGroup>(() => ({
     data: this.groupsLoaded(),
     columns: this._columns,
     onSortingChange: (updater) => {

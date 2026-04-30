@@ -51,9 +51,9 @@ function createTableState() {
     HlmTd, HlmTh, HlmTHead, HlmTr,
     LucideAngularModule,
   ],
-  templateUrl: './anime-list.html',
+  templateUrl: './anime-list.component.html',
 })
-export class AnimeList implements OnInit {
+export class AnimeListComponent implements OnInit {
   protected readonly squarePenIcon = SquarePenIcon;
   protected readonly films = signal<Film[]>([]);
 

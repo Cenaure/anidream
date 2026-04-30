@@ -6,11 +6,11 @@ import {
 } from '@spartan-ng/helm/card';
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
-import {ActivatedRoute, Router, RouterLink} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {AuthService} from '../../../../core/auth/services/auth.service';
 import {form, FormField, required} from '@angular/forms/signals';
 import {UsersService} from '../../users/services/users.service';
-import {Group} from '../../users/_schemas/user.schema';
+import {IGroup} from '../../users/_schemas/user.schema';
 
 @Component({
   selector: 'app-group-edit-child',
@@ -39,8 +39,8 @@ export class GroupEditChild {
     // });
   }
 
-  group = input<Group>()
-  groupSaved = output<Group>()
+  group = input<IGroup>()
+  groupSaved = output<IGroup>()
   //endregion: ---constructor
 
   //region: ---formDeclaration
@@ -79,9 +79,14 @@ export class GroupEditChild {
 
     // const token = this.authService.token
 
-    const perms = this.model().permissions.split(',').map(value => value.trim()).filter(value => value);
+    const permissions = this.model().permissions.split(',').map(value => value.trim()).filter(value => value);
 
-    const groupToSave = new Group(this.model().name, perms, this.id());
+    const groupToSave = {
+      id: this.id(),
+      name: this.model().name,
+      permissions,
+    } as IGroup
+
     this.usersService.saveGroup(groupToSave).subscribe(() => {
       this.groupSaved.emit(groupToSave);
     });

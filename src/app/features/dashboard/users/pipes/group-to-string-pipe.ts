@@ -1,12 +1,11 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import {Group} from '../_schemas/user.schema';
+import {IGroup} from '../_schemas/user.schema';
 
 @Pipe({
   name: 'groupToString',
 })
 export class GroupToStringPipe implements PipeTransform {
-
-  transform(groups: Group[], option?: string): string {
+  transform(groups: IGroup[], option?: string): string {
     if(option === 'permissions') {
       return "prava"
     } else {
@@ -14,5 +13,4 @@ export class GroupToStringPipe implements PipeTransform {
 
     }
   }
-
 }

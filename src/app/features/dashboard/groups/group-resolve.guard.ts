@@ -1,10 +1,10 @@
 import {ResolveFn} from '@angular/router';
-import {Group} from '../users/_schemas/user.schema';
 import {EMPTY, Observable} from 'rxjs';
 import {inject} from '@angular/core';
 import {UsersService} from '../users/services/users.service';
+import {IGroup} from '../users/_schemas/user.schema';
 
-export const groupResolve: ResolveFn<Group> = (route, state): Observable<Group> => {
+export const groupResolve: ResolveFn<IGroup> = (route, state): Observable<IGroup> => {
   const usersService = inject(UsersService)
 
   const group_id = route.paramMap.get('id')

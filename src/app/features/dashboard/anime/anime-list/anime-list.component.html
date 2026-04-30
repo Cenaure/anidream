@@ -2,7 +2,7 @@
   <h1 class="text-xl">Anime Table</h1>
 
   <div class="overflow-hidden rounded-md border mt-4">
-    <!-- we defer the loading of the table, because tanstack manipulates the DOM with flexRender which can cause errors during SSR -->
+    <!-- defer the loading of the table, because tanstack manipulates the DOM with flexRender which can cause errors during SSR -->
     @defer {
       <div hlmTableContainer>
         <table hlmTable>

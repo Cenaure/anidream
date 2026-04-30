@@ -6,13 +6,13 @@
     </div>
 
     <div hlmCardContent>
-      <form id="useredit-form" (ngSubmit)="save($event)">
+      <form id="useredit-form" (submit.prevent)="save()">
         <div class="flex flex-col gap-4">
           <div class="grid gap-2">
             <label hlmLabel for="username">Username</label>
             <input type="text" [formField]="userEditForm.username" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (userEditForm.username().invalid()) {
+              @if (userEditForm.username().invalid() && userEditForm.username().touched()) {
                 {{userEditForm.username().errors()[0].message}}
               }
             </p>
@@ -22,7 +22,7 @@
             <label hlmLabel for="email">Email</label>
             <input type="email" [formField]="userEditForm.email"  hlmInput />
             <p class="text-red-500 mt-1">
-              @if (userEditForm.email().invalid()) {
+              @if (userEditForm.email().invalid() && userEditForm.email().touched()) {
                 {{userEditForm.email().errors()[0].message}}
               }
             </p>
@@ -34,7 +34,7 @@
             </div>
             <input type="password" [formField]="userEditForm.password" hlmInput />
             <p class="text-red-500 mt-1">
-              @if (userEditForm.password().invalid()) {
+              @if (userEditForm.password().invalid() && userEditForm.password().touched()) {
                 {{userEditForm.password().errors()[0].message}}
               }
             </p>
