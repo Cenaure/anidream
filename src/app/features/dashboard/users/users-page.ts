@@ -30,7 +30,7 @@ import {PermissionsPipe} from './pipes/permissions-pipe';
 import {AlertComponent} from '../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
 import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
-import {dashboardCreateUserRoute, dashboardEditUserRoute} from '../../../shared/utils/paths';
+import {Route} from '../../../shared/utils/paths';
 
 @Component({
   selector: 'app-users',
@@ -60,7 +60,8 @@ export class UsersPage implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly permissionsPipe = inject(PermissionsPipe);
   private readonly router = inject(Router)
-  protected readonly dashboardEditUserRoute = dashboardEditUserRoute;
+
+  protected readonly dashboardEditUserRoute = Route.dashboardEditUser;
 
   protected readonly _users = signal<UserSchema[]>([]);
 
@@ -199,8 +200,8 @@ export class UsersPage implements OnInit {
   }
 
   hrefToEditPage(id: string) {
-    this.router.navigateByUrl(dashboardEditUserRoute(id));
+    this.router.navigateByUrl(this.dashboardEditUserRoute(id));
   }
 
-  protected readonly dashboardCreateUserRoute = dashboardCreateUserRoute;
+  protected readonly dashboardCreateUserRoute = Route.dashboardNewUser();
 }

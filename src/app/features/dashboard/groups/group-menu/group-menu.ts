@@ -1,7 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {Router, RouterLink, RouterLinkActive, RouterModule, RouterOutlet} from '@angular/router';
+import {Router, RouterLink, RouterOutlet} from '@angular/router';
 import {HlmTabsImports} from '@spartan-ng/helm/tabs';
-import {dashboardEditGroupRoute, dashboardListGroupsRoute} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-group-menu',

@@ -10,7 +10,7 @@ import { LucideAngularModule, SquarePenIcon } from 'lucide-angular';
 import { AnimeService } from '../../../anime/services/anime.service';
 import { Router } from '@angular/router';
 import { Film } from '../../../anime/_schemas/anime.schema';
-import { dashboardEditGroupRoute } from '../../../../shared/utils/paths';
+import {Route} from '../../../../shared/utils/paths';
 
 
 // Column helpers
@@ -94,7 +94,7 @@ export class AnimeList implements OnInit {
   }
 
   routeToEditPage(id: string) {
-    this.router.navigateByUrl(dashboardEditGroupRoute(id));
+    this.router.navigateByUrl(Route.dashboardEditGroup(id));
   }
 
   private updateSignal<T>(sig: ReturnType<typeof signal<T>>, updater: T | ((prev: T) => T)) {

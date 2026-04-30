@@ -1,28 +1,23 @@
 import { Component } from '@angular/core';
 import {RouterLink} from '@angular/router';
-import {
-  profileRoute,
-  signInRoute,
-  dashboardRoute,
-  topAnimeRoute,
-  randomAnimeRoute,
-  websiteRepoRoute, cenaureRoute, jikanRoute
-} from '../../utils/paths';
+import {Route} from '../../utils/paths';
+import {NgOptimizedImage} from '@angular/common';
 
 @Component({
   selector: 'app-footer',
   imports: [
-    RouterLink
+    RouterLink,
+    NgOptimizedImage
   ],
   templateUrl: './footer.component.html',
 })
 export class FooterComponent {
-  protected readonly profileRoute = profileRoute;
-  protected readonly dashboardRoute = dashboardRoute;
-  protected readonly signInRoute = signInRoute;
-  protected readonly topAnimeRoute = topAnimeRoute;
-  protected readonly randomAnimeRoute = randomAnimeRoute;
-  protected readonly websiteRepoRoute = websiteRepoRoute;
-  protected readonly cenaureRoute = cenaureRoute;
-  protected readonly jikanRoute = jikanRoute;
+  protected readonly profileRoute = Route.profile;
+  protected readonly dashboardRoute = Route.dashboardUsers;
+  protected readonly signInRoute = Route.signIn;
+  protected readonly topAnimeRoute = Route.topAnime();
+  protected readonly randomAnimeRoute = Route.randomAnime();
+  protected readonly websiteRepoRoute = Route.websiteRepo;
+  protected readonly cenaureRoute = Route.cenaureWebsite;
+  protected readonly jikanRoute = Route.jikanWebsite;
 }

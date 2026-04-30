@@ -1,9 +1,8 @@
 import {Component, OnInit, signal} from '@angular/core';
 import {GroupEditChild} from '../group-edit-child/group-edit-child';
 import {Group} from '../../users/_schemas/user.schema';
-import {dashboardListGroupsRoute} from '../../../../shared/utils/paths';
 import {ActivatedRoute, Router} from '@angular/router';
-import {map, tap} from 'rxjs';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-group-edit',
@@ -30,6 +29,6 @@ export class GroupEdit implements OnInit {
 
   saved(savedGroup: Group) {
     console.log(savedGroup)
-    this.router.navigateByUrl(dashboardListGroupsRoute)
+    this.router.navigateByUrl(Route.dashboardListGroups)
   }
 }

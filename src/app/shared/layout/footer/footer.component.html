@@ -18,7 +18,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 space-y-8 px-4 md:px-8 2xl:px-0">
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-2">
-            <img src="/logo.webp" alt="logo" class="w-10 h-10">
+            <img ngSrc="/logo.webp" alt="logo" class="w-10 h-10" height="546" width="546">
             <span class="text-xl">AniDream</span>
           </div>
 
@@ -45,7 +45,7 @@
         <div class="col-span-1 flex flex-col">
           <p class="text-muted-foreground uppercase text-sm tracking-tight">Links</p>
           <nav class="flex flex-col mt-2 gap-1">
-            <a [routerLink]="websiteRepoRoute" class="flex gap-1 items-center text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">
+            <a [href]="websiteRepoRoute" class="flex gap-1 items-center text-zinc-50/70 text-sm hover:text-violet-100 transition-colors underline underline-offset-2 decoration-zinc-50/70 hover:decoration-violet-100">
               <img src="/github-icon.svg" alt="github" class="w-4 h-4 inline mr-1 ">
               <p>GitHub Repo</p>
             </a>

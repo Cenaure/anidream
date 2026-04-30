@@ -11,7 +11,7 @@ import {HlmTable, HlmTableContainer, HlmTBody, HlmTd, HlmTh, HlmTHead, HlmTr} fr
 import {HlmButton} from '@spartan-ng/helm/button';
 import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
 import {Router} from '@angular/router';
-import {dashboardEditGroupRoute} from '../../../../shared/utils/paths';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-groups-list',
@@ -100,7 +100,7 @@ export class GroupsList implements OnInit {
   }
 
   routeToEditPage(id: string) {
-    this.router.navigateByUrl(dashboardEditGroupRoute(id))
+    this.router.navigateByUrl(Route.dashboardEditGroup(id))
   }
 
   protected readonly squarePenIcon = SquarePenIcon;

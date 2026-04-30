@@ -20,7 +20,7 @@ import {UserSchema} from '../../../../features/dashboard/users/_schemas/user.sch
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
-import {dashboardRoute, signInRoute} from '../../../../shared/utils/paths';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-sign-up',
@@ -38,7 +38,6 @@ import {dashboardRoute, signInRoute} from '../../../../shared/utils/paths';
     RouterLink,
     FormField
   ],
-  providers: [provideIcons({lucideCheck, lucideChevronDown})],
   templateUrl: './sign-up.html',
 })
 export class SignUp {
@@ -123,9 +122,9 @@ export class SignUp {
 
     // AuthService Sign-Up
     this.authService.signUp(user).subscribe(savedUser => {
-      this.router.navigateByUrl(dashboardRoute);
+      this.router.navigateByUrl(Route.dashboardUsers);
     })
   }
 
-  protected readonly signInRoute = signInRoute;
+  protected readonly signInRoute = Route.signIn;
 }

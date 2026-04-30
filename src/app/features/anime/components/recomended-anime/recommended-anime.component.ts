@@ -3,7 +3,7 @@ import {Anime} from '../../_schemas/anime.schema';
 import {AnimeService} from '../../services/anime.service';
 import {AnimeCardComponent} from '../anime-card/anime-card.component';
 import {RouterLink} from '@angular/router';
-import {animeRoute} from '../../../../shared/utils/paths';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-recomended-anime',
@@ -12,7 +12,7 @@ import {animeRoute} from '../../../../shared/utils/paths';
     RouterLink
   ],
   template: `
-    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-3">
       @for (anime of this.loadedAnime(); track $index) {
         <a [routerLink]="[animeRoute, anime.mal_id]">
           <app-anime-card [anime]="anime" />
@@ -49,5 +49,5 @@ export class RecommendedAnimeComponent implements OnInit{
     })
   }
 
-  protected readonly animeRoute = animeRoute;
+  protected readonly animeRoute = Route.anime;
 }

@@ -1,7 +1,7 @@
 import {CanActivateFn, CanMatchFn, Router, UrlTree} from '@angular/router';
 import {inject} from '@angular/core';
 import {AuthService} from './services/auth.service';
-import {signInRoute} from '../../shared/utils/paths';
+import {Route} from '../../shared/utils/paths';
 
 const internalGuard = (url: string): boolean | Promise<boolean> | UrlTree => {
   const authService = inject(AuthService)
@@ -11,7 +11,7 @@ const internalGuard = (url: string): boolean | Promise<boolean> | UrlTree => {
     return true;
   }
 
-  return router.createUrlTree([signInRoute], {
+  return router.createUrlTree([Route.signIn], {
     queryParams: {
       returnUrl: url
     }

@@ -1,6 +1,6 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {Router, RouterLink, RouterOutlet} from '@angular/router';
-import {HlmTabs, HlmTabsImports, HlmTabsList, HlmTabsTrigger} from '@spartan-ng/helm/tabs';
+import {RouterLink, RouterOutlet} from '@angular/router';
+import {HlmTabsImports} from '@spartan-ng/helm/tabs';
 
 @Component({
   selector: 'app-anime-menu',

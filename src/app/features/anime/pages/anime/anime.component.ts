@@ -5,7 +5,7 @@ import {DecimalPipe, NgOptimizedImage} from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {NgIcon, provideIcons} from '@ng-icons/core';
 import {phosphorArrowSquareOut, phosphorStar, phosphorUsers, phosphorTrophy, phosphorHash, phosphorMonitorPlay} from '@ng-icons/phosphor-icons/regular';
-import {AnimeCharacter, AnimeCharactersResponse} from '../../_schemas/character.schema';
+import {AnimeCharacter} from '../../_schemas/character.schema';
 import {AnimeCharacterCardComponent} from '../../components/anime-character-card/anime-character-card.component';
 
 @Component({

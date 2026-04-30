@@ -4,7 +4,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map, switchMap, tap } from 'rxjs';
 import { AnimeService } from '../../services/anime.service';
 import { AnimeCardComponent } from '../../components/anime-card/anime-card.component';
-import {animeRoute} from '../../../../shared/utils/paths';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-search',
@@ -36,5 +36,5 @@ export class SearchComponent {
   );
 
   anime = computed(() => this.result()?.data ?? null);
-  protected readonly animeRoute = animeRoute;
+  protected readonly animeRoute = Route.anime;
 }

@@ -14,13 +14,12 @@ import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
 import {zxcvbnOptions} from '@zxcvbn-ts/core';
 import {email, form, FormField, minLength, required} from '@angular/forms/signals';
 import {Group, UserSchema} from '../_schemas/user.schema';
-import {HlmSwitch} from '@spartan-ng/helm/switch';
 import {UsersService} from '../services/users.service';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
-import {dashboardUsersRoute} from '../../../../shared/utils/paths';
 import {DestroyRef, inject} from '@angular/core';
 import {map, of, switchMap, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {Route} from '../../../../shared/utils/paths';
 
 @Component({
   selector: 'app-user-edit',
@@ -119,7 +118,7 @@ export class UserEdit implements OnInit {
   save(event: Event) {
     event.preventDefault();
 
-    if (this.userEditForm().invalid()) return; // ← не сохраняем если форма невалидна
+    if (this.userEditForm().invalid()) return;
 
     const data = this.model();
     const user = new UserSchema(
@@ -132,10 +131,10 @@ export class UserEdit implements OnInit {
       this.selectedGroups()
     );
 
-    this.usersService.saveUser(user).pipe( // ← токен убран
+    this.usersService.saveUser(user).pipe(
       takeUntilDestroyed(this.destroyRef)
     ).subscribe({
-      next: () => this.router.navigateByUrl(dashboardUsersRoute),
+      next: () => this.router.navigateByUrl(Route.dashboardUsers),
       error: (err) => this.errorMessage.set(err.message ?? 'Something went wrong')
     });
   }

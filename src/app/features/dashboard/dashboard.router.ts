@@ -5,6 +5,7 @@ export const DASHBOARD_ROUTES: Routes = [
   { // Dashboard Layout
     path: '',
     loadComponent: () => import('./layout/dashboard-layout').then(c => c.DashboardLayout),
+    // Auth Guard
     canMatch: [authMatchGuard],
     // Children Routes
     children: [

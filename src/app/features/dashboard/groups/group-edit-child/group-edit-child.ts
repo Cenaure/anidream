@@ -1,4 +1,4 @@
-import {Component, computed, effect, input, linkedSignal, OnInit, output, signal} from '@angular/core';
+import {Component, computed, input, linkedSignal, output, signal} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HlmButton} from '@spartan-ng/helm/button';
 import {
@@ -9,7 +9,6 @@ import {HlmLabel} from '@spartan-ng/helm/label';
 import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import {AuthService} from '../../../../core/auth/services/auth.service';
 import {form, FormField, required} from '@angular/forms/signals';
-import {map, tap} from 'rxjs';
 import {UsersService} from '../../users/services/users.service';
 import {Group} from '../../users/_schemas/user.schema';
 

@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import {dashboardAnimeRoute, dashboardGroupsRoute, dashboardUsersRoute} from '../../../../shared/utils/paths';
 import { LucideAngularModule, LucideIconData, UsersIcon, LayersIcon } from 'lucide-angular';
+import {Route} from '../../../../shared/utils/paths';
 
 interface NavItem {
   label: string;
@@ -17,11 +17,11 @@ interface NavItem {
 })
 export class AsideNavigationComponent {
   usersNav = signal<NavItem[]>([
-    { label: 'All Users', route: dashboardUsersRoute,  icon: UsersIcon },
-    { label: 'Groups',    route: dashboardGroupsRoute, icon: LayersIcon },
+    { label: 'All Users', route: Route.dashboardUsers,  icon: UsersIcon },
+    { label: 'Groups',    route: Route.dashboardListGroups, icon: LayersIcon },
   ]);
 
   animeNav = signal<NavItem[]>([
-    { label: 'Anime', route: dashboardAnimeRoute, icon: LayersIcon },
+    { label: 'Anime', route: Route.dashboardAnime, icon: LayersIcon },
   ])
 }

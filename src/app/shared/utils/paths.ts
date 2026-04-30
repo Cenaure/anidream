@@ -1,43 +1,58 @@
-// Protected
-export const dashboardRoute = "dashboard"
+// Segments (for routers)
+export const Segment = {
+  dashboard: "dashboard",
+  auth: "auth",
+  profile: "profile",
 
-export const dashboardUsersRoute = "/" + dashboardRoute + "/users"
-export const dashboardEditUserRoute = (userId: string | number) => dashboardUsersRoute + "/user-edit/" + userId;
-export const dashboardCreateUserRoute =  "/" + dashboardUsersRoute + "user-new"
+  signIn: "sign-in",
+  signUp: "sign-up",
 
-export const dashboardGroupsRoute =  "/" + dashboardRoute + "groups"
-export const dashboardNewGroupRoute = dashboardGroupsRoute + "/new"
-export const dashboardEditGroupRoute = (id: string) => dashboardGroupsRoute + `/edit/${id}`
-export const dashboardListGroupsRoute =  "/" + dashboardGroupsRoute + "/list"
+  users: "users",
+  groups: "groups",
+  anime: "anime",
 
-export const dashboardAnimeRoute = dashboardRoute + "anime"
+  top: "top",
+  random: "random",
+  search: "search",
 
-// Auth
-export const authRoute = "auth"
-export const signIn = "sign-in"
-export const signUp = "sign-up"
-export const signUpRoute = "/" + authRoute + "/" + signUp
-export const signInRoute = "/" + authRoute + "/" + signIn
+  list: "list",
+  new: "new",
+  edit: "edit",
+  notFound: "not-found"
+} as const;
 
-// Account
-export const profileRoute = "profile"
 
-export const chatPageRoute = "chat"
+// Routes (for links)
+export const Route = {
+  // Dashboard
+  // users
+  dashboardUsers: "/" + Segment.dashboard + "/" + Segment.users,
+  dashboardNewUser: () => Route.dashboardUsers + "/" + Segment.new,
+  dashboardEditUser: (userId: string | number) => Route.dashboardUsers + "/" + Segment.edit + "/" + userId,
+  // groups
+  dashboardGroups: "/" + Segment.dashboard + "/" + Segment.groups,
+  dashboardListGroups: "/" + Segment.dashboard + "/" + Segment.groups + "/" + Segment.list,
+  dashboardNewGroup: () => Route.dashboardGroups + "/" + Segment.new,
+  dashboardEditGroup: (groupId: string | number) => Route.dashboardGroups + "/" + Segment.edit + "/" + groupId,
+  //anime
+  dashboardAnime: "/" + Segment.dashboard + "/" + Segment.anime,
 
-// Public
-export const animeRoute = "anime"
-export const topAnimeRoute = "top"
-export const randomAnime = "random"
-export const randomAnimeRoute = animeRoute + "/" + randomAnime
+  // Auth
+  signIn: "/" + Segment.auth + "/" + Segment.signIn,
+  signUp: "/" + Segment.auth + "/" + Segment.signUp,
 
-export const searchAnime = "search"
-export const searchAnimeRoute = animeRoute + "/" + searchAnime
+  // Account
+  profile: "/" + Segment.profile,
 
-// External
-export const cenaureRoute = "https://cenaure.xyz"
-export const jikanRoute = "https://jikan.moe"
-export const websiteRepoRoute = "https://github.com/Cenaure/anidream"
-export const serverRepoRoute = "https://github.com/Cenaure/rust-server"
+  // Public
+  anime: "/" + Segment.anime,
+  randomAnime: () => Route.anime + "/" + Segment.random,
+  searchAnime: () => Route.anime + "/" + Segment.search,
+  topAnime: () => Route.anime + "/" + Segment.top,
+  notFound: "/" + Segment.notFound,
 
-// Other
-export const notFoundRoute = "not-found"
+  // External
+  cenaureWebsite: "https://cenaure.xyz",
+  jikanWebsite: "https://jikan.moe",
+  websiteRepo: "https://github.com/Cenaure/anidream",
+} as const;
