@@ -1,5 +1,20 @@
-<header class="sticky top-0 z-50">
-  <div class="absolute inset-x-0 top-0 h-15 overflow-hidden pointer-events-none">
+<header class="fixed w-full md:sticky top-0 z-50">
+  <div
+    [class.max-h-0]="!isMenuOpen()"
+    [class.max-h-96]="isMenuOpen()"
+    class="md:hidden overflow-hidden transition-all duration-400 ease-in-out bg-zinc-900/60 backdrop-blur-lg">
+
+    <nav class="flex flex-col px-6 py-4 gap-4">
+      @for (link of headerLinks(); track link.href) {
+        <a [routerLink]="link.href" (click)="closeMenu()"
+           class="text-mauve-50 font-medium py-2 transition-colors">
+          {{ link.label }}
+        </a>
+      }
+    </nav>
+  </div>
+
+  <div class="hidden md:flex absolute inset-x-0 top-0 h-15 overflow-hidden pointer-events-none">
     <div class="absolute left-1/2 -translate-x-1/2 top-0 w-96 h-16 bg-violet-500/20 blur-3xl rounded-full"></div>
   </div>
 
@@ -11,7 +26,7 @@
         <p>Ani<span class="text-violet-400">Dream</span></p>
       </a>
 
-      <nav class="flex items-center gap-1">
+      <nav class="hidden md:flex items-center gap-6">
         <form (submit.prevent)="onSearch()">
           <input
             type="text"
@@ -21,19 +36,55 @@
           />
           <button type="submit" class="hidden">Search</button>
         </form>
+
+        <span class="h-8 w-[1px] bg-mauve-700"></span>
+
+        <div class="flex items-center gap-6">
+          @for (link of headerLinks(); track link.href) {
+            <a [routerLink]="link.href" (click)="closeMenu()"
+               class="text-mauve-50 hover:text-violet-400 hover:underline font-medium py-2 transition-colors">
+              {{ link.label }}
+            </a>
+          }
+        </div>
+
       </nav>
 
-      @if (!authService.isLoggedIn()) {
-        <a [routerLink]="signInRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
-          <ng-icon name="phosphorSignIn" />
-          Sign in
-        </a>
-      } @else {
-        <a [routerLink]="profileRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
-          <ng-icon name="phosphorUserCheck" size="20" />
-          Profile
-        </a>
-      }
+      <div class="flex gap-2">
+        @if (!authService.isLoggedIn()) {
+          <a [routerLink]="signInRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
+            <ng-icon name="phosphorSignIn" />
+            Sign in
+          </a>
+        } @else {
+          <a [routerLink]="profileRoute" hlmBtn class="px-4 py-1 text-sm font-semibold text-white bg-violet-600 hover:bg-violet-500 rounded-2xl transition-colors cursor-pointer">
+            <ng-icon name="phosphorUserCheck" size="20" />
+            Profile
+          </a>
+        }
+
+        <!--Burger Menu-->
+        <button
+          (click)="toggleMenu()"
+          class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 z-50">
+          <span
+            [class.translate-y-[8px]]="isMenuOpen()"
+            [class.rotate-45]="isMenuOpen()"
+            class="block w-6 h-0.5 bg-mauve-50 rounded transition-transform duration-300 origin-center">
+          </span>
+          <span
+            [class.opacity-0]="isMenuOpen()"
+            [class.scale-x-0]="isMenuOpen()"
+            class="block w-6 h-0.5 bg-mauve-50 rounded transition-all duration-300">
+          </span>
+          <span
+            [class.-translate-y-[8px]]="isMenuOpen()"
+            [class.-rotate-45]="isMenuOpen()"
+            class="block w-6 h-0.5 bg-mauve-50 rounded transition-transform duration-300 origin-center">
+          </span>
+        </button>
+      </div>
+
     </div>
   </div>
 </header>

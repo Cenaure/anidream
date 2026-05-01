@@ -13,7 +13,7 @@ import {FooterComponent} from './shared/layout/footer/footer.component';
     <div class="min-h-screen leading-relaxed relative">
       <app-navbar/>
 
-      <main class="mx-auto max-w-screen-2xl w-full min-h-[70dvh] relative px-2 md:px-4">
+      <main class="mx-auto max-w-screen-2xl w-full min-h-[70dvh] relative px-2 md:px-4 pt-20 md:py-0">
         <router-outlet/>
       </main>
 

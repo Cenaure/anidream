@@ -11,6 +11,10 @@ export const ANIME_ROUTES: Routes = [
     loadComponent: () => import("./pages/search/search.component").then(c => c.SearchComponent)
   },
   {
+    path: Segment.top,
+    loadComponent: () => import("./pages/top-anime/top-anime-page.component").then(c => c.TopAnimePageComponent)
+  },
+  {
     path: ':id',
     loadComponent: () => import("./pages/anime/anime.component").then(c => c.AnimeComponent)
   },

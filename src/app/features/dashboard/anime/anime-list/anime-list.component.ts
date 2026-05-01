@@ -87,11 +87,11 @@ export class AnimeListComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.animeService.getFilms('slovenskyNazov')
-      .subscribe(({ items }) => {
-
-        this.films.set(items)
-      });
+    // this.animeService.getFilms('slovenskyNazov')
+    //   .subscribe(({ items }) => {
+    //
+    //     this.films.set(items)
+    //   });
   }
 
   routeToEditPage(id: string | number) {

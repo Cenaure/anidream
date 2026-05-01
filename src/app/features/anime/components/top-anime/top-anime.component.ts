@@ -1,6 +1,6 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import {Component, inject, OnInit, signal, computed, Input} from '@angular/core';
 import { AnimeService } from '../../services/anime.service';
-import { Anime } from '../../_schemas/anime.schema';
+import {Anime, AnimeListSortByValues} from '../../_schemas/anime.schema';
 import {RouterLink} from '@angular/router';
 import {AnimeCardComponent} from '../anime-card/anime-card.component';
 
@@ -16,17 +16,20 @@ const LIMIT = 14;
 })
 export class TopAnimeComponent implements OnInit {
   animeService = inject(AnimeService);
+
+  @Input() limit = LIMIT;
+
   loadedTopAnime = signal<Anime[] | null>(null);
   isLoading = signal(true);
 
   displayed = computed(() => {
     const list = this.loadedTopAnime();
     if (!list) return [];
-    return list.slice(0, LIMIT);
+    return list.slice(0, this.limit);
   });
 
   ngOnInit() {
-    this.animeService.getTopAnime().subscribe({
+    this.animeService.listAnime({limit: this.limit, sort_by: AnimeListSortByValues.Score}).subscribe({
       next: (res) => {
         this.loadedTopAnime.set(res.data);
         this.isLoading.set(false);

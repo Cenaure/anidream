@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
 import {catchError, Observable, retry, timer} from 'rxjs';
-import {Anime, AnimeByIdResponse, AnimeListResponse, Film, RandomAnimeResponse} from '../_schemas/anime.schema';
+import {
+  Anime,
+  AnimeByIdResponse,
+  AnimeListResponse,
+  AnimeListSortBy,
+  Film,
+  RandomAnimeResponse
+} from '../_schemas/anime.schema';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../../env/dev.env';
 import {ErrorService} from '../../../shared/utils/processError';
@@ -11,6 +18,16 @@ import {AnimeCharactersResponse} from '../_schemas/character.schema';
 export interface FilmsDto {
   items: Film[],
   totalCount: number,
+}
+
+export interface TopAnimeQuery {
+  limit?: number,
+}
+
+export interface ListAnimeQuery {
+  limit?: number,
+  page?: number,
+  sort_by?: AnimeListSortBy
 }
 //endregion: ---DTOs
 
@@ -29,26 +46,27 @@ export class AnimeService {
   //endregion: ---constructor
 
 
-  // deprecated
-  getFilms(orderBy?: string, indexFrom?: number, indexTo?: number, descending?: boolean, search?: string): Observable<FilmsDto> {
+  // Fetches anime from !local db!
+  // doesn't request anime from jikan api
+  listAnime(query: ListAnimeQuery): Observable<AnimeListResponse> {
     let params = new HttpParams();
 
-    if (orderBy)    params = params.set('orderBy', orderBy);
-    if (descending) params = params.set('descending', descending);
-    if (indexTo)    params = params.set('indexTo', indexTo);
-    if (indexFrom)  params = params.set('indexFrom', indexFrom);
-    if (search)     params = params.set('search', search);
+    if (query.limit)   params = params.set('limit', query.limit);
+    if (query.page)    params = params.set('page', query.page);
+    if (query.sort_by) params = params.set('sort_by', query.sort_by);
 
-    return this.http.get<FilmsDto>(`${this.apiUrl}/films`, {
-      params,
-    }).pipe(
+    return this.http.get<AnimeListResponse>(`${this.apiUrl}/anime/list`, {params}).pipe(
       catchError(error => this.errorsService.processError(error))
     );
   }
 
   // Fetches the best anime by the rating
-  getTopAnime(): Observable<AnimeListResponse> {
-    return this.http.get<AnimeListResponse>(`${this.apiUrl}/anime/top`).pipe(
+  getTopAnime(query: TopAnimeQuery): Observable<AnimeListResponse> {
+    let params = new HttpParams();
+
+    if (query.limit) params = params.set("limit", query.limit)
+
+    return this.http.get<AnimeListResponse>(`${this.apiUrl}/anime/top`, {params}).pipe(
       catchError(error => this.errorsService.processError(error))
     );
   }

@@ -55,6 +55,18 @@ export interface Anime {
   genres: CommonMalResponse[] | null;
 }
 
+// SortBy Enum
+export const AnimeListSortByValues = {
+  Score: 'score',
+  Rank: 'rank',
+  Popularity: 'popularity',
+  Year: 'year',
+  Episodes: 'episodes',
+} as const;
+export type AnimeListSortBy =
+  typeof AnimeListSortByValues[keyof typeof AnimeListSortByValues];
+
+
 export interface AnimeByIdResponse {
   data: Anime;
 }

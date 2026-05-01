@@ -26,11 +26,27 @@ export class NavbarComponent {
   constructor(readonly authService: AuthService, private readonly router: Router) {}
   protected readonly signInRoute = Route.signIn;
 
-  logout() {
-    this.authService.logout().subscribe(() =>
-      this.router.navigateByUrl(this.signInRoute)
-    );
-  }
+  isMenuOpen = signal(false);
+
+  // Links
+  protected readonly headerLinks = signal<{href: string, label: string}[]>([
+    {
+      label: "Home",
+      href: "/"
+    },
+    {
+      label: "Best Releases",
+      href: Route.topAnime()
+    },
+    {
+      label: "Random Release",
+      href: Route.randomAnime()
+    },
+    {
+      label: "Dashboard",
+      href: Route.dashboardUsers
+    }
+  ])
 
   // Search
   searchModel = signal<{q: string}>({
@@ -42,6 +58,15 @@ export class NavbarComponent {
   onSearch() {
     if (!this.searchModel().q.trim()) return;
     this.router.navigate([Route.searchAnime()], { queryParams: { q: this.searchModel().q } });
+  }
+
+  // Burger menu
+  toggleMenu() {
+    this.isMenuOpen.update(v => !v);
+  }
+
+  closeMenu() {
+    this.isMenuOpen.set(false);
   }
 
   protected readonly profileRoute = Route.profile;
