@@ -1,18 +1,27 @@
 import { catchError, defaultIfEmpty, map, Observable, tap } from 'rxjs';
-import {IGroup, IUser, mapGroup, mapUser} from '../_schemas/user.schema';
+import {IUser, mapUser} from '../_schemas/user.schema';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import { ErrorService } from '../../../../shared/utils/processError';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../env/dev.env';
 import { MessageService } from '../../../../shared/services/message.service';
 import {Pagination} from '../../../../shared/services/_schema/pagination.schema';
+import {IGroup, mapGroup} from '../../groups/_schemas/group.schema';
 
-export interface GetUsersDto {
-  data: IUser[],
+export interface DataWithPaginationDto<T> {
+  data: T[],
   pagination: Pagination
 }
 
 export interface UsersQuery {
+  page: number;
+  perPage: number;
+  search?: string;
+  sortColumn?: string;
+  sortDirection?: 'asc' | 'desc' | '';
+}
+
+export interface GroupsQuery {
   page: number;
   perPage: number;
   search?: string;
@@ -28,7 +37,7 @@ export class UsersService {
   private readonly messageService = inject(MessageService);
 
   //region: ---Users
-  getUsers(query: UsersQuery): Observable<GetUsersDto> {
+  getUsers(query: UsersQuery): Observable<DataWithPaginationDto<IUser>> {
     let params = new HttpParams()
       .set('page', query.page)
       .set('limit', query.perPage);
@@ -41,7 +50,7 @@ export class UsersService {
       params = params.set('order', query.sortDirection ?? 'asc');
     }
 
-    return this.http.get<GetUsersDto>(`${this.apiUrl}/users/`, {params}).pipe(
+    return this.http.get<DataWithPaginationDto<IUser>>(`${this.apiUrl}/users/`, {params}).pipe(
       map(res => ({
         data: res.data.map(u => mapUser(u)),
         pagination: res.pagination
@@ -88,9 +97,25 @@ export class UsersService {
   //endregion: ---Users
 
   //region: ---Groups
-  getGroups(): Observable<IGroup[]> {
-    return this.http.get<IGroup[]>(`${this.apiUrl}/groups/`).pipe(
-      map(groups => groups.map(g => mapGroup(g))),
+  getGroups(query: GroupsQuery): Observable<DataWithPaginationDto<IGroup>> {
+    let params = new HttpParams()
+      .set('page', query.page)
+      .set('limit', query.perPage);
+
+    if (query.search?.trim()) {
+      params = params.set('name', query.search.trim());
+    }
+
+    if (query.sortColumn) {
+      params = params.set('sort_by', query.sortColumn);
+      params = params.set('order', query.sortDirection ?? 'asc');
+    }
+    console.log(params)
+    return this.http.get<DataWithPaginationDto<IGroup>>(`${this.apiUrl}/groups/`, {params}).pipe(
+      map(res => ({
+        data: res.data.map(g => mapGroup(g)),
+        pagination: res.pagination
+      })),
       catchError(error => this.errorService.processError(error))
     );
   }

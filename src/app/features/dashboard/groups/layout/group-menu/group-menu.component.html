@@ -1,5 +1,5 @@
 <div class="flex gap-4">
-  <hlm-tabs [tab]="currentTab()" orientation="vertical" >
+  <hlm-tabs [tab]="currentTab() || ''" orientation="vertical" >
     <hlm-tabs-list>
       <button hlmTabsTrigger="list" routerLink="list" class="cursor-pointer">List Groups</button>
       <button hlmTabsTrigger="edit" routerLink="new" class="cursor-pointer">New Group</button>

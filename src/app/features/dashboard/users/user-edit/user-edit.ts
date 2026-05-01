@@ -13,13 +13,14 @@ import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
 import {zxcvbnOptions} from '@zxcvbn-ts/core';
 import {email, form, FormField, minLength, required} from '@angular/forms/signals';
-import {IGroup, IUser, mapUser} from '../_schemas/user.schema';
+import {IUser, mapUser} from '../_schemas/user.schema';
 import {UsersService} from '../services/users.service';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
 import {DestroyRef, inject} from '@angular/core';
 import {map, of, switchMap, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
 import {Route} from '../../../../shared/utils/paths';
+import {IGroup} from '../../groups/_schemas/group.schema';
 
 @Component({
   selector: 'app-user-edit',
@@ -77,12 +78,12 @@ export class UserEdit implements OnInit {
           // isActive: user.active ?? false,
         });
       }),
-      switchMap(() => this.usersService.getGroups()),
-      tap(groups => {
-        this.groupsFromServer.set(groups);
+      switchMap(() => this.usersService.getGroups({page: 1, perPage: 1000})),
+      tap(res => {
+        this.groupsFromServer.set(res.data);
         const userGroups = this.inputUser()?.groups ?? [];
         this.selectedGroups.set(
-          groups.filter(g => userGroups.some(ug => ug === g.id))
+          res.data.filter(g => userGroups.some(ug => ug === g.id))
         );
       }),
       takeUntilDestroyed(this.destroyRef)

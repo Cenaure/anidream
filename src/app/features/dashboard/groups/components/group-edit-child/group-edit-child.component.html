@@ -1,0 +1,43 @@
+<section class="bg-zinc-800/20 ring-1 ring-zinc-700 p-4 rounded-md max-w-md">
+  <div>
+    <form id="group-edit-form" (submit.prevent)="saveGroup($event)">
+      <div class="flex flex-col gap-4">
+        <div class="grid gap-2">
+          <label hlmLabel for="name">Group Name</label>
+          <input type="text" [formField]="groupEditForm.name" hlmInput />
+          <p class="text-red-500 mt-1">
+            @if (groupEditForm.name().invalid()  && groupEditForm.name().touched()) {
+              {{groupEditForm.name().errors()[0].message}}
+            }
+          </p>
+        </div>
+
+        <div class="grid gap-2">
+          <label hlmLabel for="permissions">Group Permissions</label>
+          <input type="text" [formField]="groupEditForm.permissions" hlmInput />
+          <p class="text-red-500 mt-1">
+            @if (groupEditForm.permissions().invalid() && groupEditForm.permissions().touched()) {
+              {{groupEditForm.permissions().errors()[0].message}}
+            }
+          </p>
+        </div>
+      </div>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="text-red-500 mt-4">
+        {{errorMessage()}}
+      </p>
+    }
+  </div>
+
+  <div hlmCardFooter class="flex-col gap-2">
+    <button type="submit" form="group-edit-form" hlmBtn class="w-full cursor-pointer" [disabled]="groupEditForm().invalid()">
+      @if (id()) {
+        Save
+      } @else {
+        Create
+      }
+    </button>
+  </div>
+</section>

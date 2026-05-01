@@ -6,7 +6,7 @@ import {ErrorService} from '../../../shared/utils/processError';
 import {isPlatformBrowser} from '@angular/common';
 import {environment} from '../../../../env/dev.env';
 import {IUserSession} from '../_schemas/session.schema';
-import {IGroup} from '../../../features/dashboard/users/_schemas/user.schema';
+import {IGroup} from '../../../features/dashboard/groups/_schemas/group.schema';
 
 //region: ---DTOs
 export interface SignInDto {

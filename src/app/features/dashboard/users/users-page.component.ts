@@ -8,20 +8,20 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {
   type ColumnDef,
 } from '@tanstack/angular-table';
-import {IGroup, IUser} from './_schemas/user.schema';
-import {GetUsersDto, UsersQuery, UsersService} from './services/users.service';
+import {IUser} from './_schemas/user.schema';
+import {UsersQuery, UsersService} from './services/users.service';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {GroupToStringPipe} from './pipes/group-to-string-pipe';
 import {PermissionsPipe} from './pipes/permissions-pipe';
 import {AlertComponent} from '../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
-import {switchMap, tap} from 'rxjs';
 
 import {Route} from '../../../shared/utils/paths';
 import {
   TableFilterEvent, TablePageEvent, TableSortEvent,
   TanstackTableComponent
 } from '../../../shared/components/tanstack-table/tanstack-table.component';
+import {IGroup} from '../groups/_schemas/group.schema';
 
 @Component({
   selector: 'app-users',
@@ -61,7 +61,7 @@ export class UsersPageComponent implements OnInit {
     sortDirection: '',
   });
 
-  protected readonly _columns: ColumnDef<IUser>[] = [
+  protected readonly columns: ColumnDef<IUser>[] = [
     {
       accessorKey: 'id',
       id: 'id',
@@ -130,10 +130,10 @@ export class UsersPageComponent implements OnInit {
   ];
 
   ngOnInit(): void {
-    this.usersService.getGroups().pipe(
-      tap(groups => this.groups.set(groups)),
-    ).subscribe();
-
+    this.usersService.getGroups({
+      page: 1,
+      perPage: 1000
+    }).subscribe(res => this.groups.set(res.data));
     this.loadUsers()
   }
 
@@ -160,7 +160,7 @@ export class UsersPageComponent implements OnInit {
   private loadUsers() {
     const q = this.query();
     this.usersService.getUsers(q).subscribe({
-      next: (res: GetUsersDto) => {
+      next: res => {
         this.users.set(res.data);
         this.totalRows.set(res.pagination.items.total);
       },

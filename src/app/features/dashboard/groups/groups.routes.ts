@@ -1,16 +1,16 @@
 import {Routes} from '@angular/router';
-import {GroupMenu} from './group-menu/group-menu';
+import {GroupMenuComponent} from './layout/group-menu/group-menu.component';
 import {groupResolve} from './group-resolve.guard';
 import {Route, Segment} from '../../../shared/utils/paths';
 
 export const GROUPS_ROUTES: Routes = [
   {
-    path: '', component: GroupMenu,
+    path: '', component: GroupMenuComponent,
     children: [
-      {path: Segment.list, loadComponent: () => import("./groups-list/groups-list").then(c => c.GroupsList)},
-      {path: Segment.new, loadComponent: () => import("./group-edit/group-edit").then(c => c.GroupEdit)},
+      {path: Segment.list, loadComponent: () => import("./components/groups-list/groups-list.component").then(c => c.GroupsListComponent)},
+      {path: Segment.new, loadComponent: () => import("./components/group-edit/group-edit.component").then(c => c.GroupEditComponent)},
       {
-        path: Segment.edit + '/:id', loadComponent: () => import("./group-edit/group-edit").then(c => c.GroupEdit),
+        path: Segment.edit + '/:id', loadComponent: () => import("./components/group-edit/group-edit.component").then(c => c.GroupEditComponent),
         resolve: {
           group: groupResolve
         }

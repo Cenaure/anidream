@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {IGroup} from '../_schemas/user.schema';
+import {IGroup} from '../../groups/_schemas/group.schema';
 
 @Pipe({
   name: 'permissions',

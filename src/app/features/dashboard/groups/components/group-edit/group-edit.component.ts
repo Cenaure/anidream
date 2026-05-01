@@ -1,17 +1,17 @@
 import {Component, OnInit, signal} from '@angular/core';
-import {GroupEditChild} from '../group-edit-child/group-edit-child';
+import {GroupEditChildComponent} from '../group-edit-child/group-edit-child.component';
 import {ActivatedRoute, Router} from '@angular/router';
-import {Route} from '../../../../shared/utils/paths';
-import {IGroup} from '../../users/_schemas/user.schema';
+import {Route} from '../../../../../shared/utils/paths';
+import {IGroup} from '../../_schemas/group.schema';
 
 @Component({
   selector: 'app-group-edit',
   imports: [
-    GroupEditChild
+    GroupEditChildComponent
   ],
-  templateUrl: './group-edit.html',
+  templateUrl: './group-edit.component.html',
 })
-export class GroupEdit implements OnInit {
+export class GroupEditComponent implements OnInit {
   //region: ---constructor
   constructor(
     private readonly router: Router,

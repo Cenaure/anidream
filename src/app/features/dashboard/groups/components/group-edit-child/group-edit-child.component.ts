@@ -7,10 +7,10 @@ import {
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../../../core/auth/services/auth.service';
+import {AuthService} from '../../../../../core/auth/services/auth.service';
 import {form, FormField, required} from '@angular/forms/signals';
-import {UsersService} from '../../users/services/users.service';
-import {IGroup} from '../../users/_schemas/user.schema';
+import {UsersService} from '../../../users/services/users.service';
+import {IGroup} from '../../_schemas/group.schema';
 
 @Component({
   selector: 'app-group-edit-child',
@@ -23,9 +23,9 @@ import {IGroup} from '../../users/_schemas/user.schema';
     ReactiveFormsModule,
     FormField
   ],
-  templateUrl: './group-edit-child.html',
+  templateUrl: './group-edit-child.component.html',
 })
-export class GroupEditChild {
+export class GroupEditChildComponent {
   //region: ---constructor
   constructor(
     private readonly authService: AuthService,
@@ -75,8 +75,6 @@ export class GroupEditChild {
   errorMessage = signal('')
 
   saveGroup(event: any) {
-    event.preventDefault();
-
     // const token = this.authService.token
 
     const permissions = this.model().permissions.split(',').map(value => value.trim()).filter(value => value);

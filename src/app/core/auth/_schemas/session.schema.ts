@@ -1,4 +1,4 @@
-import {IGroup} from '../../../features/dashboard/users/_schemas/user.schema';
+import {IGroup} from '../../../features/dashboard/groups/_schemas/group.schema';
 
 export interface IUserSession {
   username: string,
