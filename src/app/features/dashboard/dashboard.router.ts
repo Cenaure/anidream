@@ -21,11 +21,11 @@ export const DASHBOARD_ROUTES: Routes = [
           // Create / Edit user
           {
             path: Segment.new,
-            loadComponent: () => import('./users/user-edit/user-edit').then(c => c.UserEdit),
+            loadComponent: () => import('./users/user-edit/./user-edit.component').then(c => c.UserEditComponent),
           },
           {
             path: Segment.edit + "/:id",
-            loadComponent: () => import('./users/user-edit/user-edit').then(c => c.UserEdit),
+            loadComponent: () => import('./users/user-edit/./user-edit.component').then(c => c.UserEditComponent),
           },
         ],
       },

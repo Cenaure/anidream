@@ -29,9 +29,9 @@ import {IGroup} from '../../groups/_schemas/group.schema';
     HlmCardFooter, HlmCardHeader, HlmCardTitle, HlmInput, HlmLabel,
     FormField, HlmCheckbox
   ],
-  templateUrl: './user-edit.html',
+  templateUrl: './user-edit.component.html',
 })
-export class UserEdit implements OnInit {
+export class UserEditComponent implements OnInit {
   //region: ---constructor
   private readonly destroyRef = inject(DestroyRef);
 
