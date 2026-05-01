@@ -1,4 +1,4 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
 import {HlmCardImports} from '@spartan-ng/helm/card';
 import {HlmInputImports} from '@spartan-ng/helm/input';
@@ -9,6 +9,7 @@ import {FormsModule} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {Route} from '../../../../shared/utils/paths';
 import {form, FormField} from '@angular/forms/signals';
+import {MetadataService} from '../../../../shared/services/metadata.service';
 
 @Component({
   selector: 'app-sign-in-component',
@@ -18,12 +19,19 @@ import {form, FormField} from '@angular/forms/signals';
   },
   templateUrl: './sign-in.component.html',
 })
-export class LoginPage {
+export class LoginPage implements OnInit {
   //region: ---injections
   protected readonly authService = inject(AuthService);
   protected readonly router = inject(Router);
+  protected readonly metadataService = inject(MetadataService);
   //endregion: ---injections
   protected readonly signUpRoute = Route.signUp;
+
+  ngOnInit() {
+    this.metadataService.updateMetadata({
+      title: "Sign in to your account",
+    })
+  }
 
   //region: ---sign-in
 

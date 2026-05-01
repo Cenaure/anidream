@@ -23,6 +23,6 @@ import {FooterComponent} from './shared/layout/footer/footer.component';
     </div>
   `
 })
-export class App {
+export class AppComponent {
   protected readonly title = signal('anidream-v2');
 }

@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {AsideNavigationComponent} from './aside-navigation/aside-dashboard-navigation';
+import {MetadataService} from '../../../shared/services/metadata.service';
 
 @Component({
   selector: 'app-dashboard-layout',
@@ -19,4 +20,13 @@ import {AsideNavigationComponent} from './aside-navigation/aside-dashboard-navig
     </div>
   `
 })
-export class DashboardLayout {}
+export class DashboardLayout implements OnInit {
+  private readonly metadataService = inject(MetadataService)
+
+  ngOnInit() {
+    this.metadataService.updateMetadata({
+      title: 'Dashboard',
+      description: 'Manage users, groups and anime'
+    })
+  }
+}

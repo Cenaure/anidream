@@ -7,6 +7,7 @@ import {NgIcon, provideIcons} from '@ng-icons/core';
 import {phosphorArrowSquareOut, phosphorStar, phosphorUsers, phosphorTrophy, phosphorHash, phosphorMonitorPlay} from '@ng-icons/phosphor-icons/regular';
 import {AnimeCharacter} from '../../_schemas/character.schema';
 import {AnimeCharacterCardComponent} from '../../components/anime-character-card/anime-character-card.component';
+import {MetadataService} from '../../../../shared/services/metadata.service';
 
 @Component({
   selector: 'app-anime',
@@ -29,10 +30,11 @@ import {AnimeCharacterCardComponent} from '../../components/anime-character-card
   ]
 })
 export class AnimeComponent implements OnInit {
-  animeService = inject(AnimeService);
+  animeService = inject(AnimeService)
+  metadataService = inject(MetadataService)
 
   // For video embedding
-  private sanitizer = inject(DomSanitizer);
+  private sanitizer = inject(DomSanitizer)
 
   //https://angular.dev/api/router/withComponentInputBinding
   @Input() id!: string;
@@ -46,7 +48,10 @@ export class AnimeComponent implements OnInit {
     this.animeService.getAnimeById(this.id).subscribe({
       next: (res) => {
         this.anime.set(res.data);
-        console.log(res.data)
+
+        this.metadataService.updateMetadata({
+          title: res.data?.titles?.[0].title,
+        })
 
         const embedUrl = res.data.trailer?.embed_url;
         if (embedUrl) {
@@ -61,7 +66,6 @@ export class AnimeComponent implements OnInit {
     this.animeService.getAnimeCharacters(this.id).subscribe({
       next: (res) => {
         this.characters.set(res.data)
-        console.log(res.data)
       }
     })
   }

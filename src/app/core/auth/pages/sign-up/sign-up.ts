@@ -1,4 +1,4 @@
-import {Component, signal} from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {HlmButton} from '@spartan-ng/helm/button';
 import {
@@ -18,6 +18,7 @@ import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
 import {Route} from '../../../../shared/utils/paths';
+import {MetadataService} from '../../../../shared/services/metadata.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -39,10 +40,10 @@ import {Route} from '../../../../shared/utils/paths';
 })
 export class SignUp {
   //region: ---constructor
-  constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router,
-  ) {
+  private readonly authService = inject(AuthService)
+  private readonly router = inject(Router)
+  private readonly metadataService = inject(MetadataService)
+  constructor() {
     zxcvbnOptions.setOptions({
       translations: zxcvbnEnPackage.translations,
       graphs: zxcvbnCommonPackage.adjacencyGraphs,
@@ -53,6 +54,12 @@ export class SignUp {
     })
   }
   //endregion: ---constructor
+
+  ngOnInit() {
+    this.metadataService.updateMetadata({
+      title: "Create a new account",
+    })
+  }
 
   //region: ---formDeclaration
   // aka react hook forms
