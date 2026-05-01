@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, contentChild, inject, input } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronDown } from '@ng-icons/lucide';
+import { phosphorCaretDown } from '@ng-icons/phosphor-icons/regular';
 import { BrnSelect, BrnSelectTrigger } from '@spartan-ng/brain/select';
 import { HlmIcon } from '@spartan-ng/helm/icon';
 import { hlm } from '@spartan-ng/helm/utils';
@@ -25,7 +25,7 @@ export const selectTriggerVariants = cva(
 @Component({
 	selector: 'hlm-select-trigger',
 	imports: [BrnSelectTrigger, NgIcon, HlmIcon],
-	providers: [provideIcons({ lucideChevronDown })],
+	providers: [provideIcons({ phosphorCaretDown })],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		<button [class]="_computedClass()" #button hlmInput brnSelectTrigger type="button" [attr.data-size]="size()">
@@ -33,7 +33,7 @@ export const selectTriggerVariants = cva(
 			@if (_icon()) {
 				<ng-content select="ng-icon" />
 			} @else {
-				<ng-icon hlm size="sm" class="ml-2 flex-none" name="lucideChevronDown" />
+				<ng-icon hlm size="sm" class="ml-2 flex-none" name="phosphorCaretDown" />
 			}
 		</button>
 	`,

@@ -1,16 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronUp } from '@ng-icons/lucide';
+import { phosphorCaretUp } from '@ng-icons/phosphor-icons/regular';
 import { HlmIcon } from '@spartan-ng/helm/icon';
 import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
 	selector: 'hlm-select-scroll-up',
 	imports: [NgIcon, HlmIcon],
-	providers: [provideIcons({ lucideChevronUp })],
+	providers: [provideIcons({ phosphorCaretUp })],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
-		<ng-icon hlm size="sm" class="ml-2" name="lucideChevronUp" />
+		<ng-icon hlm size="sm" class="ml-2" name="phosphorCaretUp" />
 	`,
 })
 export class HlmSelectScrollUp {

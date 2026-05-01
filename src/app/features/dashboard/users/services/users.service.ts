@@ -1,6 +1,6 @@
 import { catchError, defaultIfEmpty, map, Observable, tap } from 'rxjs';
 import {IGroup, IUser, mapGroup, mapUser} from '../_schemas/user.schema';
-import { HttpClient } from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import { ErrorService } from '../../../../shared/utils/processError';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../../env/dev.env';
@@ -12,6 +12,14 @@ export interface GetUsersDto {
   pagination: Pagination
 }
 
+export interface UsersQuery {
+  page: number;
+  perPage: number;
+  search?: string;
+  sortColumn?: string;
+  sortDirection?: 'asc' | 'desc' | '';
+}
+
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly apiUrl = environment.apiUrl;
@@ -20,8 +28,20 @@ export class UsersService {
   private readonly messageService = inject(MessageService);
 
   //region: ---Users
-  getUsers(): Observable<GetUsersDto> {
-    return this.http.get<GetUsersDto>(`${this.apiUrl}/users/`).pipe(
+  getUsers(query: UsersQuery): Observable<GetUsersDto> {
+    let params = new HttpParams()
+      .set('page', query.page)
+      .set('limit', query.perPage);
+
+    if (query.search?.trim()) {
+      params = params.set('email', query.search.trim());
+    }
+    if (query.sortColumn) {
+      params = params.set('sort_by', query.sortColumn);
+      params = params.set('order', query.sortDirection ?? 'asc');
+    }
+
+    return this.http.get<GetUsersDto>(`${this.apiUrl}/users/`, {params}).pipe(
       map(res => ({
         data: res.data.map(u => mapUser(u)),
         pagination: res.pagination

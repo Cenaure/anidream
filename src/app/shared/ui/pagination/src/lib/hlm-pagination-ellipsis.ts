@@ -1,20 +1,20 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { provideIcons } from '@ng-icons/core';
-import { lucideEllipsis } from '@ng-icons/lucide';
+import { phosphorDotsThree } from '@ng-icons/phosphor-icons/regular';
 import { HlmIconImports } from '@spartan-ng/helm/icon';
 import { classes } from '@spartan-ng/helm/utils';
 
 @Component({
 	selector: 'hlm-pagination-ellipsis',
 	imports: [HlmIconImports],
-	providers: [provideIcons({ lucideEllipsis })],
+	providers: [provideIcons({ phosphorDotsThree })],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	host: {
 		'data-slot': 'pagination-ellipsis',
 	},
 	template: `
 		<span aria-hidden="true">
-			<ng-icon hlm size="sm" name="lucideEllipsis" />
+			<ng-icon hlm size="sm" name="phosphorDotsThree" />
 			<span class="sr-only">{{ srOnlyText() }}</span>
 		</span>
 	`,

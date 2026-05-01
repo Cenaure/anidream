@@ -6,7 +6,8 @@ import {
 } from '@tanstack/angular-table';
 import { HlmButton } from '@spartan-ng/helm/button';
 import { HlmTable, HlmTableContainer, HlmTBody, HlmTd, HlmTh, HlmTHead, HlmTr } from '@spartan-ng/helm/table';
-import { LucideAngularModule, SquarePenIcon } from 'lucide-angular';
+import { NgIcon, provideIcons } from '@ng-icons/core';
+import { phosphorPencilSimple } from '@ng-icons/phosphor-icons/regular';
 import { AnimeService } from '../../../anime/services/anime.service';
 import { Router } from '@angular/router';
 import { Film } from '../../../anime/_schemas/anime.schema';
@@ -49,12 +50,12 @@ function createTableState() {
     FlexRenderDirective, HlmButton,
     HlmTable, HlmTableContainer, HlmTBody,
     HlmTd, HlmTh, HlmTHead, HlmTr,
-    LucideAngularModule,
+    NgIcon,
   ],
+  providers: [provideIcons({ phosphorPencilSimple })],
   templateUrl: './anime-list.component.html',
 })
 export class AnimeListComponent implements OnInit {
-  protected readonly squarePenIcon = SquarePenIcon;
   protected readonly films = signal<Film[]>([]);
 
   private readonly state = createTableState();
@@ -93,7 +94,7 @@ export class AnimeListComponent implements OnInit {
       });
   }
 
-  routeToEditPage(id: string) {
+  routeToEditPage(id: string | number) {
     this.router.navigateByUrl(Route.dashboardEditGroup(id));
   }
 

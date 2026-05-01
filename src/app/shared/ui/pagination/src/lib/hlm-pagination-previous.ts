@@ -2,7 +2,7 @@ import type { BooleanInput } from '@angular/cdk/coercion';
 import { booleanAttribute, ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import type { RouterLink } from '@angular/router';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideChevronLeft } from '@ng-icons/lucide';
+import { phosphorCaretLeft } from '@ng-icons/phosphor-icons/regular';
 import type { ButtonVariants } from '@spartan-ng/helm/button';
 import { HlmIcon } from '@spartan-ng/helm/icon';
 import { classes } from '@spartan-ng/helm/utils';
@@ -11,7 +11,7 @@ import { HlmPaginationLink } from './hlm-pagination-link';
 @Component({
 	selector: 'hlm-pagination-previous',
 	imports: [HlmPaginationLink, NgIcon, HlmIcon],
-	providers: [provideIcons({ lucideChevronLeft })],
+	providers: [provideIcons({ phosphorCaretLeft })],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	template: `
 		<a
@@ -22,7 +22,7 @@ import { HlmPaginationLink } from './hlm-pagination-link';
 			[size]="_size()"
 			[attr.aria-label]="ariaLabel()"
 		>
-			<ng-icon hlm size="sm" name="lucideChevronLeft" />
+			<ng-icon hlm size="sm" name="phosphorCaretLeft" />
 			<span [class]="_labelClass()">{{ text() }}</span>
 		</a>
 	`,

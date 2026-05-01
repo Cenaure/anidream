@@ -8,7 +8,8 @@ import {
 } from '@tanstack/angular-table';
 import {HlmTable, HlmTableContainer, HlmTBody, HlmTd, HlmTh, HlmTHead, HlmTr} from '@spartan-ng/helm/table';
 import {HlmButton} from '@spartan-ng/helm/button';
-import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
+import {NgIcon, provideIcons} from '@ng-icons/core';
+import {phosphorPencilSimple} from '@ng-icons/phosphor-icons/regular';
 import {Router} from '@angular/router';
 import {Route} from '../../../../shared/utils/paths';
 import {IGroup} from '../../users/_schemas/user.schema';
@@ -25,8 +26,9 @@ import {IGroup} from '../../users/_schemas/user.schema';
     HlmTBody,
     HlmTd,
     HlmButton,
-    LucideAngularModule
+    NgIcon
   ],
+  providers: [provideIcons({phosphorPencilSimple})],
   templateUrl: './groups-list.html',
 })
 export class GroupsList implements OnInit {
@@ -102,6 +104,4 @@ export class GroupsList implements OnInit {
   routeToEditPage(id: string) {
     this.router.navigateByUrl(Route.dashboardEditGroup(id))
   }
-
-  protected readonly squarePenIcon = SquarePenIcon;
 }

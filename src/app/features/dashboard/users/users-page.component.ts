@@ -1,61 +1,46 @@
 import {Component, signal, inject, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIcon, provideIcons} from '@ng-icons/core';
-import {lucideChevronDown} from '@ng-icons/lucide';
+import {phosphorCaretDown, phosphorPencilSimple, phosphorTrash} from '@ng-icons/phosphor-icons/regular';
 import {BrnSelectImports} from '@spartan-ng/brain/select';
 import {HlmButtonImports} from '@spartan-ng/helm/button';
-import {HlmDropdownMenuImports} from '@spartan-ng/helm/dropdown-menu';
 import {HlmIconImports} from '@spartan-ng/helm/icon';
-import {HlmInputImports} from '@spartan-ng/helm/input';
-import {HlmTableImports} from '@spartan-ng/helm/table';
-import {hlmMuted} from '@spartan-ng/helm/typography';
 import {
   type ColumnDef,
-  type ColumnFiltersState,
-  createAngularTable,
-  FlexRenderDirective,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type RowSelectionState,
-  type SortingState,
-  type VisibilityState,
 } from '@tanstack/angular-table';
 import {IGroup, IUser} from './_schemas/user.schema';
-import {UsersService} from './services/users.service';
+import {GetUsersDto, UsersQuery, UsersService} from './services/users.service';
 import {AuthService} from '../../../core/auth/services/auth.service';
 import {GroupToStringPipe} from './pipes/group-to-string-pipe';
 import {PermissionsPipe} from './pipes/permissions-pipe';
 import {AlertComponent} from '../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
-import {LucideAngularModule, SquarePenIcon} from 'lucide-angular';
-import {Route} from '../../../shared/utils/paths';
 import {switchMap, tap} from 'rxjs';
+
+import {Route} from '../../../shared/utils/paths';
+import {
+  TableFilterEvent, TablePageEvent, TableSortEvent,
+  TanstackTableComponent
+} from '../../../shared/components/tanstack-table/tanstack-table.component';
 
 @Component({
   selector: 'app-users',
   imports: [
-    FlexRenderDirective,
     FormsModule,
-    HlmDropdownMenuImports,
     HlmButtonImports,
     NgIcon,
     HlmIconImports,
-    HlmInputImports,
     BrnSelectImports,
-    HlmTableImports,
     AlertComponent,
     RouterLink,
-    LucideAngularModule,
+    TanstackTableComponent,
   ],
-  providers: [provideIcons({lucideChevronDown}), GroupToStringPipe, PermissionsPipe],
+  providers: [provideIcons({phosphorCaretDown, phosphorPencilSimple, phosphorTrash}), GroupToStringPipe, PermissionsPipe],
   host: {class: 'w-full'},
   templateUrl: './users-page.component.html',
   standalone: true
 })
 export class UsersPageComponent implements OnInit {
-  readonly squarePenIcon = SquarePenIcon
   private readonly groupsToStringPipe = inject(GroupToStringPipe)
   private readonly usersService = inject(UsersService);
   private readonly authService = inject(AuthService);
@@ -64,8 +49,17 @@ export class UsersPageComponent implements OnInit {
 
   protected readonly dashboardEditUserRoute = Route.dashboardEditUser;
 
-  protected readonly _users = signal<IUser[]>([]);
-  protected readonly _groups = signal<IGroup[]>([]);
+  protected readonly users = signal<IUser[]>([]);
+  protected readonly groups = signal<IGroup[]>([]);
+  protected totalRows = signal(0);
+
+  query = signal<UsersQuery>({
+    page: 1,
+    perPage: 10,
+    search: '',
+    sortColumn: '',
+    sortDirection: '',
+  });
 
   protected readonly _columns: ColumnDef<IUser>[] = [
     {
@@ -104,13 +98,13 @@ export class UsersPageComponent implements OnInit {
       header: 'User Groups',
       enableSorting: false,
       cell: (info) => {
-        const groupIds = info.getValue<{ $oid: string }[]>();
+        const groupIds = info.getValue<string[]>();
 
-        const foundGroups = this._groups().filter(group =>
-          groupIds.some(idObj => idObj.$oid === group.id)
+        const foundGroups = this.groups().filter(group =>
+          groupIds.some(id => id === group.id)
         );
 
-        return `<span>${this.groupsToStringPipe.transform(foundGroups) ?? '—'}</span>`
+        return `<span>${this.groupsToStringPipe.transform(foundGroups) || '—'}</span>`
       },
     },
     {
@@ -119,13 +113,13 @@ export class UsersPageComponent implements OnInit {
       header: 'User Permissions',
       enableSorting: false,
       cell: (info) => {
-        const groupIds = info.getValue<{ $oid: string }[]>();
+        const groupIds = info.getValue<string[]>();
 
-        const foundGroups = this._groups().filter(group =>
-          groupIds.some(idObj => idObj.$oid === group.id)
+        const foundGroups = this.groups().filter(group =>
+          groupIds.some(id => id === group.id)
         );
 
-        return `<span>${this.permissionsPipe.transform(foundGroups, 'permissions')}</span>`;
+        return `<span>${this.permissionsPipe.transform(foundGroups, 'permissions') || "—"}</span>`;
       }
     },
     {
@@ -135,71 +129,43 @@ export class UsersPageComponent implements OnInit {
     },
   ];
 
-  private readonly _columnFilters = signal<ColumnFiltersState>([]);
-  private readonly _sorting = signal<SortingState>([]);
-  private readonly _rowSelection = signal<RowSelectionState>({});
-  private readonly _columnVisibility = signal<VisibilityState>({
-    lastLogin: this.authService.isLoggedIn()
-  });
-
-  protected readonly _table = createAngularTable<IUser>(() => ({
-    data: this._users(),
-    columns: this._columns,
-    enableSorting: true,
-    onSortingChange: (updater) => {
-      updater instanceof Function ? this._sorting.update(updater) : this._sorting.set(updater);
-    },
-    onColumnFiltersChange: (updater) => {
-      updater instanceof Function ? this._columnFilters.update(updater) : this._columnFilters.set(updater);
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnVisibilityChange: (updater) => {
-      updater instanceof Function ? this._columnVisibility.update(updater) : this._columnVisibility.set(updater);
-    },
-    onRowSelectionChange: (updater) => {
-      updater instanceof Function ? this._rowSelection.update(updater) : this._rowSelection.set(updater);
-    },
-    state: {
-      sorting: this._sorting(),
-      columnFilters: this._columnFilters(),
-      columnVisibility: this._columnVisibility(),
-      rowSelection: this._rowSelection(),
-    },
-    initialState: {
-      pagination: { pageSize: 10 }
-    }
-  }));
-
-  protected readonly _hidableColumns = this._table.getAllColumns().filter((c) => c.getCanHide());
-  protected readonly _hlmMuted = hlmMuted;
-
   ngOnInit(): void {
     this.usersService.getGroups().pipe(
-      tap(groups => this._groups.set(groups)),
-      switchMap(() => this.usersService.getUsers())
-    ).subscribe({
-      next: (res) => {
-        this._users.set(res.data);
-      },
-      error: (err) => console.error('error:', err)
-    });
+      tap(groups => this.groups.set(groups)),
+    ).subscribe();
+
+    this.loadUsers()
   }
 
-  protected _filterChanged(event: Event): void {
-    const value = (event.target as { value?: string } | null)?.value ?? '';
-    this._table.getColumn('email')?.setFilterValue(value);
+  onPageChange(event: TablePageEvent) {
+    this.query.update((q) => ({ ...q, page: event.pageIndex + 1 }));
+    this.loadUsers();
+  }
+
+  onFilterChange(event: TableFilterEvent) {
+    this.query.update((q) => ({ ...q, search: event.value, page: 1 }));
+    this.loadUsers();
+  }
+
+  onSortChange(event: TableSortEvent) {
+    this.query.update((q) => ({
+      ...q,
+      sortColumn: event.column,
+      sortDirection: event.direction,
+      page: 1,
+    }));
+    this.loadUsers();
   }
 
   private loadUsers() {
-    this.usersService.getUsers().subscribe({
-      next: (res) => {
-        this._users.set(res.data)
+    const q = this.query();
+    this.usersService.getUsers(q).subscribe({
+      next: (res: GetUsersDto) => {
+        this.users.set(res.data);
+        this.totalRows.set(res.pagination.items.total);
       },
-      error: (err) => console.error('error:', err)
-    })
+      error: (err) => console.error('error:', err),
+    });
   }
 
   protected deleteUser(user: IUser): void {

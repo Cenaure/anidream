@@ -1,0 +1,137 @@
+<div class="flex flex-col justify-between gap-4 py-4 sm:flex-row sm:items-center">
+  <input
+    hlmInput
+    class="w-full"
+    [placeholder]="filterPlaceholder"
+    (input)="_filterChanged($event)"
+  />
+
+  <button hlmBtn variant="outline" align="end" [hlmDropdownMenuTrigger]="columnMenu">
+    Columns
+    <ng-icon hlm name="phosphorCaretDown" class="ml-2" size="sm" />
+  </button>
+
+  <ng-template #columnMenu>
+    <hlm-dropdown-menu class="w-32">
+      @for (column of _hidableColumns; track column.id) {
+        <button
+          hlmDropdownMenuCheckbox
+          class="capitalize"
+          [checked]="column.getIsVisible()"
+          (triggered)="column.toggleVisibility()"
+        >
+          <hlm-dropdown-menu-checkbox-indicator />
+          {{ column.columnDef.id }}
+        </button>
+      }
+    </hlm-dropdown-menu>
+  </ng-template>
+</div>
+
+<div class="overflow-hidden rounded-md border">
+  @defer {
+    <div hlmTableContainer>
+      <table hlmTable>
+        <thead hlmTHead>
+          @for (headerGroup of _table.getHeaderGroups(); track headerGroup.id) {
+            <tr hlmTr>
+              @for (header of headerGroup.headers; track header.id) {
+                <th
+                  hlmTh
+                  [attr.colSpan]="header.colSpan"
+                  (click)="header.column.getCanSort() && header.column.toggleSorting()"
+                >
+                  @if (!header.isPlaceholder) {
+                    <ng-container
+                      *flexRender="header.column.columnDef.header; props: header.getContext(); let headerText"
+                    >
+                      <div
+                        class="flex items-center gap-1"
+                        [class.cursor-pointer]="header.column.getCanSort()"
+                      >
+                        <span [innerHTML]="headerText"></span>
+                        @if (header.column.getCanSort()) {
+                          @if (header.column.getIsSorted() === 'asc') { ↑ }
+                          @else if (header.column.getIsSorted() === 'desc') { ↓ }
+                          @else { ↕ }
+                        }
+                      </div>
+                    </ng-container>
+                  }
+                </th>
+              }
+            </tr>
+          }
+        </thead>
+
+        <tbody hlmTBody>
+          @for (row of _table.getRowModel().rows; track row.id) {
+            <tr
+              hlmTr
+              [attr.key]="row.id"
+              [attr.data-state]="row.getIsSelected() && 'selected'"
+            >
+              @for (cell of row.getVisibleCells(); track $index) {
+                <td hlmTd>
+                  @if (cell.column.id === 'actions' && actionsTemplate) {
+                    <ng-container
+                      *ngTemplateOutlet="actionsTemplate; context: { $implicit: row.original }"
+                    />
+                  } @else {
+                    <ng-container
+                      *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cellValue"
+                    >
+                      <div [innerHTML]="cellValue"></div>
+                    </ng-container>
+                  }
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr hlmTr>
+              <td hlmTd class="h-24 text-center" [attr.colspan]="columns.length">
+                No results.
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>
+
+<!-- Pagination -->
+<div class="flex flex-col justify-between py-4 sm:flex-row sm:items-center">
+  @if (_table.getRowCount() > 0) {
+    <div [class]="_hlmMuted">
+      Page {{ _table.getState().pagination.pageIndex + 1 }}
+      of {{ _table.getPageCount() }}
+      &nbsp;·&nbsp;
+      {{ _table.getRowCount() }} rows
+    </div>
+    <div class="mt-2 flex space-x-2 sm:mt-0">
+      <button
+        size="sm"
+        variant="outline"
+        hlmBtn
+        [disabled]="!_table.getCanPreviousPage()"
+        (click)="_table.previousPage()"
+      >
+        Previous
+      </button>
+      <button
+        size="sm"
+        variant="outline"
+        hlmBtn
+        [disabled]="!_table.getCanNextPage()"
+        (click)="_table.nextPage()"
+      >
+        Next
+      </button>
+    </div>
+  } @else {
+    <div class="flex h-full w-full items-center justify-center">
+      <p class="text-muted-foreground text-sm">No data found</p>
+    </div>
+  }
+</div>

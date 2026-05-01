@@ -17,10 +17,9 @@ export function mapUser(u: any): IUser {
       ? new Date(Number(u.last_login.$date.$numberLong))
       : u.last_login ? new Date(u.last_login) : undefined,
     password: u.password ?? '',
-    groups: u.groups ?? []
+    groups: u.groups && u.groups.map((g: {$oid: string}) => g.$oid) || []
   }
 }
-
 
 // Group Schema
 export interface IGroup {

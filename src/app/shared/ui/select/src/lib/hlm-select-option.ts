@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { NgIcon, provideIcons } from '@ng-icons/core';
-import { lucideCheck } from '@ng-icons/lucide';
+import { phosphorCheck } from '@ng-icons/phosphor-icons/regular';
 import { BrnSelectOption } from '@spartan-ng/brain/select';
 import { HlmIcon } from '@spartan-ng/helm/icon';
 import { classes } from '@spartan-ng/helm/utils';
@@ -8,13 +8,13 @@ import { classes } from '@spartan-ng/helm/utils';
 @Component({
 	selector: 'hlm-option',
 	imports: [NgIcon, HlmIcon],
-	providers: [provideIcons({ lucideCheck })],
+	providers: [provideIcons({ phosphorCheck })],
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	hostDirectives: [{ directive: BrnSelectOption, inputs: ['disabled', 'value'] }],
 	template: `
 		<span class="absolute end-2 flex size-3.5 items-center justify-center">
 			@if (this._brnSelectOption.selected()) {
-				<ng-icon hlm size="sm" aria-hidden="true" name="lucideCheck" />
+				<ng-icon hlm size="sm" aria-hidden="true" name="phosphorCheck" />
 			}
 		</span>
 

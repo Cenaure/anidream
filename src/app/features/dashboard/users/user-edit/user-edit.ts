@@ -65,9 +65,10 @@ export class UserEdit implements OnInit {
       switchMap(userId =>
         userId
           ? this.usersService.getUser(userId)
-          : of(mapUser({username: '', password: '', id: ''}))
+          : of(mapUser({username: '', email: '', password: ''}))
       ),
       tap(user => {
+        console.log(user)
         this.inputUser.set(user);
         this.model.set({
           username: user.username,
@@ -128,6 +129,7 @@ export class UserEdit implements OnInit {
       groups: this.selectedGroups().map(g => g.id || '')
     } as IUser;
 
+    console.log(user)
     this.usersService.saveUser(user).subscribe({
       next: () => this.router.navigateByUrl(Route.dashboardUsers),
       error: (err) => this.errorMessage.set(err.message ?? 'Something went wrong')
