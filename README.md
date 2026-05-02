@@ -15,9 +15,9 @@
 2. **SignIn** 
    → [`src/app/core/auth/pages/sign-in/sign-in.component.ts`](src/app/core/auth/pages/sign-in/sign-in.component.ts)
 3. **SignUp**
-   → [`src/app/core/auth/pages/sign-in/sign-up.component.ts`](src/app/core/auth/pages/sign-in/sign-up.component.ts)
+   → [`src/app/core/auth/pages/sign-up/sign-up.component.ts`](src/app/core/auth/pages/sign-up/sign-up.component.ts)
 4. **UserEdit**
-   → [`src/app/features/dashboard/users/user-edit/user-edit.component.ts`](src/app/features/dashboard/users/user-edit/user-edit.component.ts)
+   → [`src/app/features/dashboard/users/user-edit/user-edit.component.ts`](src/app/features/dashboard/users/pages/user-edit/user-edit.component.ts)
 5. **GroupEdit**
    → [`src/app/features/dashboard/groups/components/group-edit/group-edit.component.ts`](src/app/features/dashboard/groups/components/group-edit/group-edit.component.ts)
 
@@ -25,6 +25,7 @@
 - V projekte **neboli použité** template-driven ani reaktívne formuláre - výlučne signálne formuláre
 - Direktívy `*ngIf` a `*ngFor` **neboli použité** nikde v projekte - nahradené `@if`, `@for`
 
+---
 
 # AniDream
 

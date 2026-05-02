@@ -1,24 +1,6 @@
-import {Person} from './character.schema';
-import {Postava} from './producer.schema';
 import {CommonMalResponse} from './common.shcema';
 import {Pagination} from '../../../shared/services/_schema/pagination.schema';
 import {Images} from './image.schema';
-
-// TODO remove below
-
-export class Film {
-  constructor(
-    public nazov: string,
-    public rok: number,
-    public slovenskyNazov: string,
-    public imdbID: string,
-    public reziser: Person[],
-    public postava: Postava[],
-    public poradieVRebricku: {[name: string]: number},
-    public id?: number
-  ){}
-}
-
 
 // This stuff is cool
 export interface AnimeTrailer {
@@ -32,7 +14,7 @@ export interface AnimeTitles {
   title: string;
 }
 
-export interface Anime {
+export interface IAnime {
   mal_id: number;
   url: string | null;
   images: Images | null;
@@ -68,14 +50,14 @@ export type AnimeListSortBy =
 
 
 export interface AnimeByIdResponse {
-  data: Anime;
+  data: IAnime;
 }
 
 export interface AnimeListResponse {
-  data: Anime[];
+  data: IAnime[];
   pagination: Pagination;
 }
 
 export interface RandomAnimeResponse {
-  data: Anime;
+  data: IAnime;
 }

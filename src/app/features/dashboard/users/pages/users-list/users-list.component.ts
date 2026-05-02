@@ -8,20 +8,20 @@ import {HlmIconImports} from '@spartan-ng/helm/icon';
 import {
   type ColumnDef,
 } from '@tanstack/angular-table';
-import {IUser} from './_schemas/user.schema';
-import {UsersQuery, UsersService} from './services/users.service';
-import {AuthService} from '../../../core/auth/services/auth.service';
-import {GroupToStringPipe} from './pipes/group-to-string-pipe';
-import {PermissionsPipe} from './pipes/permissions-pipe';
-import {AlertComponent} from '../../../shared/components/alert/alert.component';
+import {IUser} from '../../_schemas/user.schema';
+import {UsersQuery, UsersService} from '../../services/users.service';
+import {AuthService} from '../../../../../core/auth/services/auth.service';
+import {GroupToStringPipe} from '../../pipes/group-to-string-pipe';
+import {PermissionsPipe} from '../../pipes/permissions-pipe';
+import {AlertComponent} from '../../../../../shared/components/alert/alert.component';
 import {Router, RouterLink} from '@angular/router';
 
-import {Route} from '../../../shared/utils/paths';
+import {Route} from '../../../../../shared/utils/paths';
 import {
   TableFilterEvent, TablePageEvent, TableSortEvent,
   TanstackTableComponent
-} from '../../../shared/components/tanstack-table/tanstack-table.component';
-import {IGroup} from '../groups/_schemas/group.schema';
+} from '../../../../../shared/components/tanstack-table/tanstack-table.component';
+import {IGroup} from '../../../groups/_schemas/group.schema';
 
 @Component({
   selector: 'app-users',
@@ -37,10 +37,10 @@ import {IGroup} from '../groups/_schemas/group.schema';
   ],
   providers: [provideIcons({phosphorCaretDown, phosphorPencilSimple, phosphorTrash}), GroupToStringPipe, PermissionsPipe],
   host: {class: 'w-full'},
-  templateUrl: './users-page.component.html',
+  templateUrl: './users-list.component.html',
   standalone: true
 })
-export class UsersPageComponent implements OnInit {
+export class UsersListComponent implements OnInit {
   private readonly groupsToStringPipe = inject(GroupToStringPipe)
   private readonly usersService = inject(UsersService);
   private readonly authService = inject(AuthService);
@@ -169,8 +169,6 @@ export class UsersPageComponent implements OnInit {
   }
 
   protected deleteUser(user: IUser): void {
-    console.log('delete', user);
-    // const token = this.authService.token;
     this.usersService.deleteUser(user.id || "").subscribe(success => {
         if(success) this.loadUsers()
     })

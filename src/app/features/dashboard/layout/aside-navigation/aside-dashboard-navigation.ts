@@ -2,7 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {Route} from '../../../../shared/utils/paths';
 import {NgIcon, provideIcons} from '@ng-icons/core';
-import {phosphorFilmSlate, phosphorStack, phosphorUsers} from '@ng-icons/phosphor-icons/regular';
+import {phosphorFilmSlate, phosphorHouse, phosphorStack, phosphorUsers} from '@ng-icons/phosphor-icons/regular';
 
 interface NavItem {
   label: string;
@@ -13,7 +13,7 @@ interface NavItem {
 @Component({
   selector: 'app-aside-dashboard-navigation',
   imports: [RouterLink, RouterLinkActive, NgIcon],
-  providers: [provideIcons({phosphorUsers, phosphorStack, phosphorFilmSlate})],
+  providers: [provideIcons({phosphorUsers, phosphorStack, phosphorFilmSlate, phosphorHouse})],
   templateUrl: './aside-dashboard-navigation.html',
 })
 export class AsideNavigationComponent {
@@ -24,5 +24,6 @@ export class AsideNavigationComponent {
 
   animeNav = signal<NavItem[]>([
     { label: 'Anime', route: Route.dashboardAnime, icon: 'phosphorFilmSlate' },
+    { label: 'Producers', route: Route.dashboardProducers, icon: 'phosphorHouse' },
   ])
 }

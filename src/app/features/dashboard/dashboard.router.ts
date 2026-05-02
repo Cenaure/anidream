@@ -10,26 +10,10 @@ export const DASHBOARD_ROUTES: Routes = [
     canMatch: [authMatchGuard],
     // Children Routes
     children: [
-      //Users
       {
         path: Segment.users,
-        children: [
-          {
-            path: "",
-            loadComponent: () => import('./users/users-page.component').then(c => c.UsersPageComponent),
-          },
-          // Create / Edit user
-          {
-            path: Segment.new,
-            loadComponent: () => import('./users/user-edit/./user-edit.component').then(c => c.UserEditComponent),
-          },
-          {
-            path: Segment.edit + "/:id",
-            loadComponent: () => import('./users/user-edit/./user-edit.component').then(c => c.UserEditComponent),
-          },
-        ],
+        loadChildren: () => import('./users/users.routes').then(r => r.USERS_ROUTES),
       },
-      //Groups
       {
         path: Segment.groups,
         loadChildren: () => import('./groups/groups.routes').then(r => r.GROUPS_ROUTES),
@@ -37,6 +21,10 @@ export const DASHBOARD_ROUTES: Routes = [
       {
         path: Segment.anime,
         loadChildren: () => import('./anime/anime.router').then(r => r.ANIME_ROUTES)
+      },
+      {
+        path: Segment.producers,
+        loadChildren: () => import('./producers/producers.routes').then(r => r.PRODUCERS_ROUTES),
       }
     ]
   }

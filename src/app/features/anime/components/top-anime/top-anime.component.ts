@@ -1,6 +1,6 @@
 import {Component, inject, OnInit, signal, computed, Input} from '@angular/core';
 import { AnimeService } from '../../services/anime.service';
-import {Anime, AnimeListSortByValues} from '../../_schemas/anime.schema';
+import {IAnime, AnimeListSortByValues} from '../../_schemas/anime.schema';
 import {RouterLink} from '@angular/router';
 import {AnimeCardComponent} from '../anime-card/anime-card.component';
 
@@ -19,7 +19,7 @@ export class TopAnimeComponent implements OnInit {
 
   @Input() limit = LIMIT;
 
-  loadedTopAnime = signal<Anime[] | null>(null);
+  loadedTopAnime = signal<IAnime[] | null>(null);
   isLoading = signal(true);
 
   displayed = computed(() => {
@@ -29,7 +29,7 @@ export class TopAnimeComponent implements OnInit {
   });
 
   ngOnInit() {
-    this.animeService.listAnime({limit: this.limit, sort_by: AnimeListSortByValues.Score}).subscribe({
+    this.animeService.listAnime({perPage: this.limit, page: 1, sortColumn: AnimeListSortByValues.Score, sortDirection: 'desc'}).subscribe({
       next: (res) => {
         this.loadedTopAnime.set(res.data);
         this.isLoading.set(false);

@@ -28,16 +28,8 @@ import {IGroup} from '../../_schemas/group.schema';
 export class GroupEditChildComponent {
   //region: ---constructor
   constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router,
-    private readonly route: ActivatedRoute,
     private readonly usersService: UsersService,
-  ) {
-    // effect(() => {
-    //   const id = this.group()?.id;
-    //   if (id) this.loadGroup(id);
-    // });
-  }
+  ) {}
 
   group = input<IGroup>()
   groupSaved = output<IGroup>()
@@ -61,15 +53,6 @@ export class GroupEditChildComponent {
   //endregion: ---formDeclaration
 
   id = computed(() => this.group()?.id);
-
-  loadGroup(groupId: string) {
-    this.usersService.getGroup(groupId).subscribe(group => {
-      this.model.set({
-        name: group.name,
-        permissions: group.permissions.join(",")
-      })
-    })
-  }
 
   // Server Error
   errorMessage = signal('')

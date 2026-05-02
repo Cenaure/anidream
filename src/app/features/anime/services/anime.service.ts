@@ -1,33 +1,30 @@
 import { Injectable } from '@angular/core';
-import {catchError, Observable, retry, timer} from 'rxjs';
+import {catchError, Observable} from 'rxjs';
 import {
-  Anime,
+  IAnime,
   AnimeByIdResponse,
   AnimeListResponse,
-  AnimeListSortBy,
-  Film,
-  RandomAnimeResponse
+  RandomAnimeResponse, AnimeListSortBy
 } from '../_schemas/anime.schema';
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {environment} from '../../../../env/dev.env';
 import {ErrorService} from '../../../shared/utils/processError';
 import {AnimeCharactersResponse} from '../_schemas/character.schema';
+import {ProducersSortBy} from '../../dashboard/producers/services/producers.service';
 
 //region: ---DTOs
 // TODO: refactor to use rust-server instead of java
-export interface FilmsDto {
-  items: Film[],
-  totalCount: number,
-}
 
 export interface TopAnimeQuery {
   limit?: number,
 }
 
 export interface ListAnimeQuery {
-  limit?: number,
-  page?: number,
-  sort_by?: AnimeListSortBy
+  page: number;
+  perPage: number;
+  search?: string;
+  sortColumn?: AnimeListSortBy;
+  sortDirection?: 'asc' | 'desc' | '';
 }
 //endregion: ---DTOs
 
@@ -49,11 +46,17 @@ export class AnimeService {
   // Fetches anime from !local db!
   // doesn't request anime from jikan api
   listAnime(query: ListAnimeQuery): Observable<AnimeListResponse> {
-    let params = new HttpParams();
+    let params = new HttpParams()
+      .set('page', query.page)
+      .set('limit', query.perPage);
 
-    if (query.limit)   params = params.set('limit', query.limit);
-    if (query.page)    params = params.set('page', query.page);
-    if (query.sort_by) params = params.set('sort_by', query.sort_by);
+    if (query.search?.trim()) {
+      params = params.set('name', query.search.trim());
+    }
+    if (query.sortColumn) {
+      params = params.set('sort_by', query.sortColumn);
+      params = params.set('order', query.sortDirection ?? 'asc');
+    }
 
     return this.http.get<AnimeListResponse>(`${this.apiUrl}/anime/list`, {params}).pipe(
       catchError(error => this.errorsService.processError(error))
@@ -96,15 +99,15 @@ export class AnimeService {
     )
   }
 
-  getAnimeByIds(ids: string): Observable<{data: Anime[]}> {
-    return this.http.get<{data: Anime[]}>(`${this.apiUrl}/anime/ids/${ids}`).pipe(
+  getAnimeByIds(ids: string): Observable<{data: IAnime[]}> {
+    return this.http.get<{data: IAnime[]}>(`${this.apiUrl}/anime/ids/${ids}`).pipe(
       catchError(error => this.errorsService.processError(error))
     )
   }
 
   // Fetches anime characters by its mal_id
   getAnimeCharacters(id: string): Observable<AnimeCharactersResponse> {
-    return this.http.get<AnimeCharactersResponse>(`${this.apiUrl}/anime/${id}/characters`).pipe(
+    return this.http.get<AnimeCharactersResponse>(`${this.apiUrl}/characters/${id}`).pipe(
       catchError(error => this.errorsService.processError(error))
     )
   }

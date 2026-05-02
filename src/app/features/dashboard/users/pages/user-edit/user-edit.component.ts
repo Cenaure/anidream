@@ -8,19 +8,19 @@ import {
 import {HlmInput} from '@spartan-ng/helm/input';
 import {HlmLabel} from '@spartan-ng/helm/label';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AuthService} from '../../../../core/auth/services/auth.service';
+import {AuthService} from '../../../../../core/auth/services/auth.service';
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en';
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common';
 import {zxcvbnOptions} from '@zxcvbn-ts/core';
 import {email, form, FormField, minLength, required} from '@angular/forms/signals';
-import {IUser, mapUser} from '../_schemas/user.schema';
-import {UsersService} from '../services/users.service';
+import {IUser, mapUser} from '../../_schemas/user.schema';
+import {UsersService} from '../../services/users.service';
 import {HlmCheckbox} from '@spartan-ng/helm/checkbox';
 import {DestroyRef, inject} from '@angular/core';
 import {map, of, switchMap, tap} from 'rxjs';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {Route} from '../../../../shared/utils/paths';
-import {IGroup} from '../../groups/_schemas/group.schema';
+import {Route} from '../../../../../shared/utils/paths';
+import {IGroup} from '../../../groups/_schemas/group.schema';
 
 @Component({
   selector: 'app-user-edit',
@@ -69,7 +69,6 @@ export class UserEditComponent implements OnInit {
           : of(mapUser({username: '', email: '', password: ''}))
       ),
       tap(user => {
-        console.log(user)
         this.inputUser.set(user);
         this.model.set({
           username: user.username,
@@ -101,7 +100,7 @@ export class UserEditComponent implements OnInit {
 
   userEditForm = form(this.model, schemaPath => {
     required(schemaPath.username, {message: "Username is required"})
-    minLength(schemaPath.username, 3, {message: "Username must have at least 3 characters"})
+    minLength(schemaPath.username, 2, {message: "Username must have at least 2 characters"})
     required(schemaPath.email, {message: "Email is required"})
     email(schemaPath.email, {message: "Invalid email"})
   });

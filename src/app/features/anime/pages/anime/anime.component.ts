@@ -1,6 +1,6 @@
 import {Component, inject, Input, OnInit, signal} from '@angular/core';
 import {AnimeService} from '../../services/anime.service';
-import {Anime} from '../../_schemas/anime.schema';
+import {IAnime} from '../../_schemas/anime.schema';
 import {DecimalPipe, NgOptimizedImage} from '@angular/common';
 import {DomSanitizer, SafeResourceUrl} from '@angular/platform-browser';
 import {NgIcon, provideIcons} from '@ng-icons/core';
@@ -40,7 +40,7 @@ export class AnimeComponent implements OnInit {
   @Input() id!: string;
 
   // Anime that will be displayed on the page
-  anime = signal<Anime | null>(null)
+  anime = signal<IAnime | null>(null)
   characters = signal<AnimeCharacter[] | null>(null)
 
   readonly safeTrailerUrl = signal<SafeResourceUrl | null>(null);

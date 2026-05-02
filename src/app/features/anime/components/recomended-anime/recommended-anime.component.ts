@@ -1,5 +1,5 @@
 import {Component, inject, OnInit, signal} from '@angular/core';
-import {Anime} from '../../_schemas/anime.schema';
+import {IAnime} from '../../_schemas/anime.schema';
 import {AnimeService} from '../../services/anime.service';
 import {AnimeCardComponent} from '../anime-card/anime-card.component';
 import {RouterLink} from '@angular/router';
@@ -32,7 +32,7 @@ export class RecommendedAnimeComponent implements OnInit{
 
   recommendedAnimeIds = ["19815", "28851", "16498", "44511", "38000", "46095", "49828", "37779", "51553", "52034", "34599", "32281"]
 
-  loadedAnime = signal<Anime[] | null>(null)
+  loadedAnime = signal<IAnime[] | null>(null)
   isLoading = signal<boolean>(true)
 
   ngOnInit() {
@@ -40,7 +40,7 @@ export class RecommendedAnimeComponent implements OnInit{
       next: (res) => {
         const sorted = this.recommendedAnimeIds
           .map(id => res.data.find(a => a.mal_id === Number(id)))
-          .filter((a): a is Anime => a !== undefined);
+          .filter((a): a is IAnime => a !== undefined);
         this.loadedAnime.set(sorted);
 
         this.isLoading.set(false);

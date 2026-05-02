@@ -10,6 +10,7 @@ export const Segment = {
   users: "users",
   groups: "groups",
   anime: "anime",
+  producers: "producers",
 
   top: "top",
   random: "random",
@@ -34,8 +35,14 @@ export const Route = {
   dashboardListGroups: "/" + Segment.dashboard + "/" + Segment.groups + "/" + Segment.list,
   dashboardNewGroup: () => Route.dashboardGroups + "/" + Segment.new,
   dashboardEditGroup: (groupId: string | number) => Route.dashboardGroups + "/" + Segment.edit + "/" + groupId,
-  //anime
-  dashboardAnime: "/" + Segment.dashboard + "/" + Segment.anime,
+  // anime
+  dashboardAnime: "/" + Segment.dashboard + "/" + Segment.anime + "/" + Segment.list,
+  dashboardNewAnime: () => Route.dashboardAnime + "/" + Segment.new,
+  dashboardEditAnime: (animeMalId: string | number) => Route.dashboardAnime + "/" + Segment.edit + "/" + animeMalId,
+  // producers
+  dashboardProducers: "/" + Segment.dashboard + "/" + Segment.producers,
+  dashboardEditProducer: (producerMalId: string | number) => Route.dashboardProducers + "/" + Segment.edit + "/" + producerMalId,
+
 
   // Auth
   signIn: "/" + Segment.auth + "/" + Segment.signIn,
