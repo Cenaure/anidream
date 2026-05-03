@@ -49,7 +49,7 @@ export type AnimeListSortBy =
   typeof AnimeListSortByValues[keyof typeof AnimeListSortByValues];
 
 
-export interface AnimeByIdResponse {
+export interface DataAnime {
   data: IAnime;
 }
 

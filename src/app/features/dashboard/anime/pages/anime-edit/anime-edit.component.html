@@ -1,0 +1,235 @@
+<div class="flex justify-center items-center md:py-10">
+  <section class="not-md:rounded-none w-full md:max-w-2xl ring-0 shadow-lg" hlmCard>
+    <div hlmCardHeader>
+      <h3 hlmCardTitle>
+        @if (isEdit()) {
+          Edit an Anime
+        } @else {
+          Create a new Anime
+        }
+      </h3>
+      <p hlmCardDescription>Enter Anime's data</p>
+    </div>
+    <div hlmCardContent>
+      <form id="anime-edit-form" (submit.prevent)="save()">
+        <div class="flex flex-col gap-4">
+
+          <div class="grid gap-2">
+            <label hlmLabel>MAL ID</label>
+            @if (isEdit()) {
+              <input type="number" [formField]="animeEditForm.mal_id" hlmInput class="pointer-events-none opacity-60" />
+            } @else {
+              <input type="number" [formField]="animeEditForm.mal_id" hlmInput />
+            }
+            <p class="text-red-500 mt-1">
+              @if (animeEditForm.mal_id().invalid()) {
+                {{ animeEditForm.mal_id().errors()[0].message }}
+              }
+            </p>
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>MAL URL</label>
+            <input type="url" [formField]="animeEditForm.url" hlmInput placeholder="https://myanimelist.net/anime/..." />
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Title</label>
+            <input
+              type="text"
+              [formField]="animeEditForm.titles[0].title"
+              hlmInput
+              placeholder="Default title"
+            />
+            <p class="text-red-500 mt-1">
+              @if (animeEditForm.titles[0].title().invalid()) {
+                {{ animeEditForm.titles[0].title().errors()[0].message }}
+              }
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-2">
+              <label hlmLabel>Type</label>
+              <select [formField]="animeEditForm.type" hlmInput>
+                @for (opt of animeTypeOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.type().invalid()) {
+                  {{ animeEditForm.type().errors()[0].message }}
+                }
+              </p>
+            </div>
+
+            <div class="grid gap-2">
+              <label hlmLabel>Status</label>
+              <select [formField]="animeEditForm.status" hlmInput>
+                @for (opt of animeStatusOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.status().invalid()) {
+                  {{ animeEditForm.status().errors()[0].message }}
+                }
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-2">
+              <label hlmLabel>Episodes</label>
+              <input type="number" [formField]="animeEditForm.episodes" hlmInput />
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.episodes().invalid()) {
+                  {{ animeEditForm.episodes().errors()[0].message }}
+                }
+              </p>
+            </div>
+
+            <div class="grid gap-2">
+              <label hlmLabel>Year</label>
+              <input type="number" [formField]="animeEditForm.year" hlmInput placeholder="e.g. 2024" />
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.year().invalid()) {
+                  {{ animeEditForm.year().errors()[0].message }}
+                }
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-2">
+              <label hlmLabel>Rating</label>
+              <select [formField]="animeEditForm.rating" hlmInput>
+                @for (opt of animeRatingOptions; track opt.value) {
+                  <option [value]="opt.value">{{ opt.label }}</option>
+                }
+              </select>
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.rating().invalid()) {
+                  {{ animeEditForm.rating().errors()[0].message }}
+                }
+              </p>
+            </div>
+
+            <div class="grid gap-2">
+              <label hlmLabel>Score <span class="text-muted-foreground text-xs">(0–10)</span></label>
+              <input type="number" [formField]="animeEditForm.score" hlmInput placeholder="-1 if N/A" />
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.score().invalid()) {
+                  {{ animeEditForm.score().errors()[0].message }}
+                }
+              </p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="grid gap-2">
+              <label hlmLabel>Rank</label>
+              <input type="number" [formField]="animeEditForm.rank" hlmInput placeholder="-1 if N/A" />
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.rank().invalid()) {
+                  {{ animeEditForm.rank().errors()[0].message }}
+                }
+              </p>
+            </div>
+
+            <div class="grid gap-2">
+              <label hlmLabel>Popularity</label>
+              <input type="number" [formField]="animeEditForm.popularity" hlmInput placeholder="-1 if N/A" />
+              <p class="text-red-500 mt-1">
+                @if (animeEditForm.popularity().invalid()) {
+                  {{ animeEditForm.popularity().errors()[0].message }}
+                }
+              </p>
+            </div>
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Synopsis</label>
+            <textarea
+              [formField]="animeEditForm.synopsis"
+              hlmInput
+              rows="5"
+              placeholder="Enter synopsis..."
+              class="resize-y"
+            ></textarea>
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Producers</label>
+            <select
+              hlmInput
+              multiple
+              class="min-h-32"
+              (change)="onProducersChange($event)"
+            >
+              @for (producer of availableProducers(); track producer.mal_id) {
+                <option
+                  [class.bg-mauve-700]="animeEditFormModel().producer_ids.includes(producer.mal_id)"
+                  [value]="producer.mal_id"
+                  [selected]="animeEditFormModel().producer_ids.includes(producer.mal_id)"
+                >
+                  {{ producer.name }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Studios</label>
+            <input
+              type="text"
+              [formField]="animeEditForm.studios"
+              hlmInput
+              placeholder="e.g. Bones, MAPPA, Ufotable"
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Genres</label>
+            <input
+              type="text"
+              [formField]="animeEditForm.genres"
+              hlmInput
+              placeholder="e.g. Action, Adventure, Fantasy"
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <label hlmLabel>Image URL</label>
+            <input
+              type="url"
+              [formField]="animeEditForm.images.webp.image_url"
+              hlmInput
+              placeholder="https://cdn.myanimelist.net/images/anime/..."
+            />
+          </div>
+
+        </div>
+      </form>
+
+      @if (errorMessage()) {
+        <p class="text-red-500 mt-4">{{ errorMessage() }}</p>
+      }
+    </div>
+
+    <div hlmCardFooter class="flex-col gap-2">
+      <button
+        type="submit"
+        form="anime-edit-form"
+        hlmBtn
+        class="w-full cursor-pointer"
+      >
+        @if (isEdit()) {
+          Save Anime
+        } @else {
+          Create Anime
+        }
+      </button>
+    </div>
+  </section>
+</div>

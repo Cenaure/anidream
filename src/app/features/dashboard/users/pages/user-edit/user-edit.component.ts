@@ -51,7 +51,7 @@ export class UserEditComponent implements OnInit {
     });
   }
 
-  readonly userId = signal<string | null>(null); // string — MongoDB ObjectId
+  readonly userId = signal<string | null>(null);
   readonly inputUser = signal<IUser | null>(null);
   //endregion: ---constructor
 

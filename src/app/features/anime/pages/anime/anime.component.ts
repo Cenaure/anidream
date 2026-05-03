@@ -48,7 +48,7 @@ export class AnimeComponent implements OnInit {
     this.animeService.getAnimeById(this.id).subscribe({
       next: (res) => {
         this.anime.set(res.data);
-
+        console.log(res.data)
         this.metadataService.updateMetadata({
           title: res.data?.titles?.[0].title,
         })

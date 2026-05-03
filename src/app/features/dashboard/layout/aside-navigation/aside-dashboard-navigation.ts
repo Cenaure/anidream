@@ -23,7 +23,7 @@ export class AsideNavigationComponent {
   ]);
 
   animeNav = signal<NavItem[]>([
-    { label: 'Anime', route: Route.dashboardAnime, icon: 'phosphorFilmSlate' },
+    { label: 'Anime', route: Route.dashboardListAnime(), icon: 'phosphorFilmSlate' },
     { label: 'Producers', route: Route.dashboardProducers, icon: 'phosphorHouse' },
   ])
 }

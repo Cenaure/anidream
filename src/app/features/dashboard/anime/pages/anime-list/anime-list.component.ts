@@ -1,6 +1,6 @@
 import {Component, OnInit, inject, signal} from '@angular/core';
 import {NgIcon, provideIcons} from '@ng-icons/core';
-import { phosphorPencilSimple } from '@ng-icons/phosphor-icons/regular';
+import {phosphorPencilSimple, phosphorTrash} from '@ng-icons/phosphor-icons/regular';
 import {AnimeService, ListAnimeQuery} from '../../../../anime/services/anime.service';
 import {Router, RouterLink} from '@angular/router';
 import {Route} from '../../../../../shared/utils/paths';
@@ -16,7 +16,7 @@ import {HlmButton} from '@spartan-ng/helm/button';
 
 @Component({
   selector: 'app-anime-list',
-  providers: [provideIcons({phosphorPencilSimple})],
+  providers: [provideIcons({phosphorPencilSimple, phosphorTrash})],
   templateUrl: './anime-list.component.html',
   imports: [
     AlertComponent,
@@ -57,7 +57,9 @@ export class AnimeListComponent implements OnInit {
       cell: (info) => {
         const titles = info.getValue<AnimeTitles[] | null>();
         const primary = titles?.find(t => t.type === 'Default') ?? titles?.[0];
-        return `<span>${primary?.title ?? '—'}</span>`;
+
+        const mal_id = info.row.original.mal_id
+        return `<span><a class="text-violet-300 hover:underline hover:text-violet-400" href="${Route.anime + "/" + mal_id}" target="_blank">${primary?.title ?? '—'}</a>`;
       },
     },
     {
@@ -168,6 +170,12 @@ export class AnimeListComponent implements OnInit {
 
   hrefToEditPage(id: string | number) {
     this.router.navigateByUrl(Route.dashboardEditAnime(id));
+  }
+
+  deleteAnime(id: number) {
+    this.animeService.deleteAnime(id).subscribe(success => {
+      if(success) this.loadAnime()
+    })
   }
 
   protected readonly createNewAnimeRoute = Route.dashboardNewAnime()

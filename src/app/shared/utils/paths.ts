@@ -36,7 +36,8 @@ export const Route = {
   dashboardNewGroup: () => Route.dashboardGroups + "/" + Segment.new,
   dashboardEditGroup: (groupId: string | number) => Route.dashboardGroups + "/" + Segment.edit + "/" + groupId,
   // anime
-  dashboardAnime: "/" + Segment.dashboard + "/" + Segment.anime + "/" + Segment.list,
+  dashboardAnime: "/" + Segment.dashboard + "/" + Segment.anime,
+  dashboardListAnime: () =>  Route.dashboardAnime + "/" + Segment.list,
   dashboardNewAnime: () => Route.dashboardAnime + "/" + Segment.new,
   dashboardEditAnime: (animeMalId: string | number) => Route.dashboardAnime + "/" + Segment.edit + "/" + animeMalId,
   // producers

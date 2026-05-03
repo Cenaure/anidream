@@ -1,20 +1,20 @@
-import { Injectable } from '@angular/core';
-import {catchError, Observable} from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {catchError, defaultIfEmpty, map, Observable, tap} from 'rxjs';
 import {
   IAnime,
-  AnimeByIdResponse,
+  DataAnime,
   AnimeListResponse,
-  RandomAnimeResponse, AnimeListSortBy
+  RandomAnimeResponse, AnimeListSortBy, AnimeTitles
 } from '../_schemas/anime.schema';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {environment} from '../../../../env/dev.env';
 import {ErrorService} from '../../../shared/utils/processError';
 import {AnimeCharactersResponse} from '../_schemas/character.schema';
-import {ProducersSortBy} from '../../dashboard/producers/services/producers.service';
+import {Images} from '../_schemas/image.schema';
+import {CommonMalResponse} from '../_schemas/common.shcema';
+import {MessageService} from '../../../shared/services/message.service';
 
 //region: ---DTOs
-// TODO: refactor to use rust-server instead of java
-
 export interface TopAnimeQuery {
   limit?: number,
 }
@@ -26,6 +26,51 @@ export interface ListAnimeQuery {
   sortColumn?: AnimeListSortBy;
   sortDirection?: 'asc' | 'desc' | '';
 }
+
+
+export const AnimeStatusValues = {
+  Airing: "Currently Airing",
+  FinishedAiring: "Finished Airing",
+  Upcoming: "Upcoming",
+} as const
+export type AnimeStatus = typeof AnimeStatusValues[keyof typeof AnimeStatusValues]
+
+export const AnimeRatingValues = {
+  PG13: "PG-13 - Teens 13 or older",
+  R: "R - 17+ (violence & profanity)",
+  Rplus: "R+ - Mild Nudity",
+} as const
+export type AnimeRating = typeof AnimeRatingValues[keyof typeof AnimeRatingValues]
+
+export const AnimeTypeValues = {
+  TV: "TV",
+  Movie: "Movie",
+  OVA: "OVA",
+  ONA: "ONA",
+  Special: "Special",
+  Music: "Music",
+} as const
+export type AnimeType = typeof AnimeTypeValues[keyof typeof AnimeTypeValues]
+
+export interface CreateAnimeDto {
+  mal_id: number;
+  url?: string;
+  images?: Images;
+  titles?: AnimeTitles[];
+  type?: string;
+  episodes?: number;
+  status?: string;
+  airing?: boolean;
+  rating?: string;
+  score?: number;
+  synopsis?: string;
+  year?: number;
+  producer_ids?: number[];
+  studios?: CommonMalResponse[];
+  genres?: CommonMalResponse[];
+  rank?: number;
+  popularity?: number;
+}
 //endregion: ---DTOs
 
 
@@ -34,10 +79,9 @@ export interface ListAnimeQuery {
 })
 export class AnimeService {
   //region: ---constructor
-  constructor(
-    private readonly http: HttpClient,
-    private readonly errorsService: ErrorService,
-  ) {}
+  private readonly http = inject(HttpClient)
+  private readonly errorsService = inject(ErrorService)
+  private readonly messageService = inject(MessageService)
 
   private readonly apiUrl: string = environment.apiUrl
   //endregion: ---constructor
@@ -51,7 +95,7 @@ export class AnimeService {
       .set('limit', query.perPage);
 
     if (query.search?.trim()) {
-      params = params.set('name', query.search.trim());
+      params = params.set('query', query.search.trim());
     }
     if (query.sortColumn) {
       params = params.set('sort_by', query.sortColumn);
@@ -93,8 +137,8 @@ export class AnimeService {
   }
 
   // Fetches anime by its mal_id
-  getAnimeById(id: string): Observable<AnimeByIdResponse> {
-    return this.http.get<AnimeByIdResponse>(`${this.apiUrl}/anime/${id}`).pipe(
+  getAnimeById(id: string): Observable<DataAnime> {
+    return this.http.get<DataAnime>(`${this.apiUrl}/anime/${id}`).pipe(
       catchError(error => this.errorsService.processError(error))
     )
   }
@@ -110,5 +154,32 @@ export class AnimeService {
     return this.http.get<AnimeCharactersResponse>(`${this.apiUrl}/characters/${id}`).pipe(
       catchError(error => this.errorsService.processError(error))
     )
+  }
+
+  saveAnime(dto: CreateAnimeDto, edit: boolean): Observable<DataAnime> {
+    if(!edit) {
+      return this.http.post<{data: IAnime}>(`${this.apiUrl}/anime/`, dto).pipe(
+        tap(() => this.messageService.success("Anime created Successfully")),
+        catchError(error => this.errorsService.processError(error))
+      )
+    } else {
+      const {mal_id, ...updateDto} = dto;
+
+      return this.http.put<{data: IAnime}>(`${this.apiUrl}/anime/${mal_id}`, updateDto).pipe(
+        tap(() => this.messageService.success("Anime updated Successfully")),
+        catchError(error => this.errorsService.processError(error))
+      )
+    }
+  }
+
+  deleteAnime(id: number): Observable<boolean> {
+    return this.http.delete<void>(`${this.apiUrl}/anime/${id}`).pipe(
+      map(() => {
+        this.messageService.success('User deleted successfully.');
+        return true;
+      }),
+      catchError(error => this.errorsService.processError(error)),
+      defaultIfEmpty(false)
+    );
   }
 }
