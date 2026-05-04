@@ -3,7 +3,7 @@ import {environment} from '../../../../../env/dev.env';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {ErrorService} from '../../../../shared/utils/processError';
 import {MessageService} from '../../../../shared/services/message.service';
-import {catchError, EMPTY, map, Observable} from 'rxjs';
+import {catchError, EMPTY, map, Observable, tap} from 'rxjs';
 import {IUser, mapUser} from '../../users/_schemas/user.schema';
 import {DataWithPaginationDto, UsersQuery} from '../../users/services/users.service';
 import {IProducer, mapProducer} from '../_schemas/producer.schema';
@@ -69,6 +69,7 @@ export class ProducersService {
   updateProducer(mal_id: number, body: UpdateProducerRequest): Observable<{ data: IProducer }> {
     return this.http.patch<{ data: IProducer }>(`${this.apiUrl}/producers/${mal_id}`, body).pipe(
       map(res => ({ data: mapProducer(res.data) })),
+      tap(() => this.messageService.success("Producer updated successfully")),
       catchError(error => this.errorService.processError(error))
     );
   }

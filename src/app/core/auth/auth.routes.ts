@@ -8,6 +8,6 @@ export const AUTH_ROUTES = [
   },
   {
     path: Segment.signUp,
-    loadComponent: () => import('./pages/sign-up/sign-up').then(p => p.SignUp),
+    loadComponent: () => import('./pages/sign-up/sign-up.component').then(p => p.SignUpComponent),
   }
 ];

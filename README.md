@@ -5,21 +5,23 @@
 > - `Film` → `Anime`
 > - `FilmEdit` → `AnimeEdit`
 > - Režiséri → Producers
-> - Postavy → Characters
+> - Postavy → Studios / Genres
 ---
 **Signálne formuláre použité v projekte:**
 
-!TODO not implemented yet
 1. **AnimeEdit** - hlavný komponent na pridanie aj úpravu anime (ekvivalent FilmEdit)  
-   → [`src/app/anime/anime-edit/anime-edit.component.ts`](src/app/anime/anime-edit/anime-edit.component.ts)
-2. **SignIn** 
+   → [`src/app/features/dashboard/anime/pages/anime-edit/anime-edit.component.ts`](src/app/features/dashboard/anime/pages/anime-edit/anime-edit.component.ts)
+2. **UserEdit**
+   → [`src/app/features/dashboard/users/pages/user-edit/user-edit.component.ts`](src/app/features/dashboard/users/pages/user-edit/user-edit.component.ts)
+3. **GroupEdit**
+   → [`src/app/features/dashboard/groups/components/group-edit-child/group-edit-child.component.ts`](src/app/features/dashboard/groups/components/group-edit-child/group-edit-child.component.ts)
+4. **ProducerEdit**   
+   → [`src/app/features/dashboard/producers/pages/producer-edit/producer-edit.component.ts`](src/app/features/dashboard/producers/pages/producer-edit/producer-edit.component.ts)
+5. **SignIn** 
    → [`src/app/core/auth/pages/sign-in/sign-in.component.ts`](src/app/core/auth/pages/sign-in/sign-in.component.ts)
-3. **SignUp**
+6. **SignUp**
    → [`src/app/core/auth/pages/sign-up/sign-up.component.ts`](src/app/core/auth/pages/sign-up/sign-up.component.ts)
-4. **UserEdit**
-   → [`src/app/features/dashboard/users/user-edit/user-edit.component.ts`](src/app/features/dashboard/users/pages/user-edit/user-edit.component.ts)
-5. **GroupEdit**
-   → [`src/app/features/dashboard/groups/components/group-edit/group-edit.component.ts`](src/app/features/dashboard/groups/components/group-edit/group-edit.component.ts)
+
 
 ---
 - V projekte **neboli použité** template-driven ani reaktívne formuláre - výlučne signálne formuláre
@@ -45,7 +47,7 @@ A full-stack anime discovery app built with **Angular** (frontend) and **Rust + 
 - Browse top-rated anime
 - Get random anime
 - Look for any anime from Jikan API
-- View detailed anime info – synopsis, score, ranking, genres, characters, staff
+- View detailed anime info - synopsis, score, ranking, genres, characters, staff
 - Add and edit anime entries via `AnimeEdit` component
 - Results cached in MongoDB to reduce external API calls
 - really awesome design :)

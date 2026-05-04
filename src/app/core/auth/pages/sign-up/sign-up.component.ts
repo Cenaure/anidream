@@ -36,9 +36,9 @@ import {MetadataService} from '../../../../shared/services/metadata.service';
     RouterLink,
     FormField
   ],
-  templateUrl: './sign-up.html',
+  templateUrl: './sign-up.component.html',
 })
-export class SignUp {
+export class SignUpComponent {
   //region: ---constructor
   private readonly authService = inject(AuthService)
   private readonly router = inject(Router)
